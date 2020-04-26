@@ -17,8 +17,7 @@ namespace _3D_Graphics
 
         private Scene scene;
 
-        private List<Perspective_Camera> cameras = new List<Perspective_Camera>();
-        private Perspective_Camera current_camera;
+        private Camera current_camera;
         private int camera_selected = 0;
 
         private List<Light> lights = new List<Light>();
@@ -40,22 +39,22 @@ namespace _3D_Graphics
             Bitmap smiley = new Bitmap(texture_folder + "smiley.jpg");
 
             // Create default meshes
-            Cube cube_mesh = new Cube(new Vector3D(0, 0, 0), Vector3D.Unit_X, Vector3D.Unit_Y, 50, null, null, Color.Green);
+            Cube cube_mesh = new Cube(new Vector3D(0, 0, 0), Vector3D.Unit_X, Vector3D.Unit_Y, 50) { Face_Colour = Color.Green };
             Shape cube = new Shape(cube_mesh) { Selected = true };
             scene.Add(cube);
 
-            Cuboid cuboid_mesh = new Cuboid(new Vector3D(100, 0, 100), Vector3D.Unit_X, Vector3D.Unit_Y, 30, 40, 90, smiley, null, null);
+            Cuboid cuboid_mesh = new Cuboid(new Vector3D(100, 0, 100), Vector3D.Unit_X, Vector3D.Unit_Y, 30, 40, 90, smiley);
             Shape cuboid = new Shape(cuboid_mesh);
             scene.Add(cuboid);
 
-            Plane plane_mesh = new Plane(new Vector3D(0, 0, -30), Vector3D.Unit_X, Vector3D.Unit_Y, 100, 100, null, null, Color.Aqua);
+            Plane plane_mesh = new Plane(new Vector3D(0, 0, -30), Vector3D.Unit_X, Vector3D.Unit_Y, 100, 100) { Face_Colour = Color.Aqua };
             Shape plane = new Shape(plane_mesh);
             scene.Add(plane);
 
             // Create axes
-            Line x_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(250, 0, 0), null, Color.Red);
-            Line y_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(0, 250, 0), null, Color.Green);
-            Line z_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(0, 0, 250), null, Color.Blue);
+            Line x_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(250, 0, 0)) { Edge_Colour = Color.Red };
+            Line y_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(0, 250, 0)) { Edge_Colour = Color.Green };
+            Line z_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(0, 0, 250)) { Edge_Colour = Color.Blue };
 
             Shape x_axis = new Shape(x_axis_mesh);
             Shape y_axis = new Shape(y_axis_mesh);
@@ -70,11 +69,11 @@ namespace _3D_Graphics
             scene.Add(test_plane_shape);
 
             // Create cameras
-            cameras.Add(new Perspective_Camera(new Vector3D(0, 0, 200), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 50, 750));
-            cameras.Add(new Perspective_Camera(new Vector3D(0, 0, -200), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 50, 750));
-            current_camera = cameras[0];
-            scene.Add(cameras[0]);
-            scene.Add(cameras[1]);
+            Perspective_Camera camera_1 = new Perspective_Camera(new Vector3D(0, 0, 200), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 50, 750);
+            Perspective_Camera camera_2 = new Perspective_Camera(new Vector3D(0, 0, -200), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 50, 750);
+            current_camera = camera_1;
+            scene.Add(camera_1);
+            scene.Add(camera_2);
 
             // Create lights
             lights.Add(new Distant_Light(new Vector3D(300, 400, 500), cube_mesh, Color.Red, 1));
@@ -208,8 +207,8 @@ namespace _3D_Graphics
         private void switchCameraToolStripMenuItem_Click(object sender, EventArgs e)
         {
             camera_selected++;
-            if (camera_selected > cameras.Count - 1) camera_selected = 0;
-            current_camera = cameras[camera_selected];
+            if (camera_selected > scene.Camera_List.Count - 1) camera_selected = 0;
+            current_camera = scene.Camera_List[camera_selected];
         }
 
         private void MainForm_Resize(object sender, EventArgs e)

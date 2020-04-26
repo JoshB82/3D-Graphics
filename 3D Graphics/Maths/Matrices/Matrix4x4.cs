@@ -98,7 +98,8 @@ namespace _3D_Graphics
                 m.Data[1][0] * v.X + m.Data[1][1] * v.Y + m.Data[1][2] * v.Z + m.Data[1][3] * v.W,
                 m.Data[2][0] * v.X + m.Data[2][1] * v.Y + m.Data[2][2] * v.Z + m.Data[2][3] * v.W,
                 m.Data[3][0] * v.X + m.Data[3][1] * v.Y + m.Data[3][2] * v.Z + m.Data[3][3] * v.W,
-                v.Colour, v.Visible, v.Diameter);
+                v.Colour)
+            { Diameter = v.Diameter, Visible = v.Visible };
         }
 
         /*

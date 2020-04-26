@@ -10,12 +10,14 @@ namespace _3D_Graphics
         public bool Visible { get; set; }
         #endregion
 
-        public Vertex(double x, double y, double z, double w = 1, Color? colour = null) : base(x, y, z, w)
+        public Vertex(double x, double y, double z, double w, Color? colour = null) : base(x, y, z, w)
         {
             Colour = colour ?? Color.BlueViolet;
             Diameter = 10;
             Visible = true;
         }
+
+        public Vertex(double x, double y, double z, Color? colour = null) : this(x, y, z, 1, colour) { }
 
         /*
         public Vertex(double x, double y, double z, Color? colour = null, bool visibility = true, int diameter = 10) : this(x, y, z, 1, colour, visibility, diameter) {}

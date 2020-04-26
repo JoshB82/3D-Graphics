@@ -28,17 +28,14 @@ namespace _3D_Graphics
             }
         }
 
-        public Plane(Vector3D origin, Vector3D direction, Vector3D normal, double length, double width,
-            Color? vertex_colour = null,
-            Color? edge_colour = null,
-            Color? face_colour = null)
+        public Plane(Vector3D origin, Vector3D direction, Vector3D normal, double length, double width)
         {
             Length = length;
             Width = width;
 
-            Vertex_Colour = vertex_colour ?? Color.Blue;
-            Edge_Colour = edge_colour ?? Color.Black;
-            Face_Colour = face_colour ?? Color.FromArgb(0xFF, 0x00, 0xFF, 0x00); // Green
+            Vertex_Colour = Color.Blue;
+            Edge_Colour = Color.Black;
+            Face_Colour = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00); // Green
 
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, normal);
@@ -69,15 +66,13 @@ namespace _3D_Graphics
             Debug.WriteLine($"Plane created at {origin}");
         }
 
-        public Plane(Vector3D origin, Vector3D direction, Vector3D normal, double length, double width, Bitmap texture,
-            Color? vertex_colour = null,
-            Color? edge_colour = null)
+        public Plane(Vector3D origin, Vector3D direction, Vector3D normal, double length, double width, Bitmap texture)
         {
             Length = length;
             Width = width;
 
-            Vertex_Colour = vertex_colour ?? Color.Blue;
-            Edge_Colour = edge_colour ?? Color.Black;
+            Vertex_Colour = Color.Blue;
+            Edge_Colour = Color.Black;
 
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, normal);

@@ -47,12 +47,10 @@ namespace _3D_Graphics
         #endregion
 
         #region Translations (Position)
-        public Vector3D Translation { get; private set; }
-
-        public void Translate_X(double distance) => Translation += new Vector3D(distance, 0, 0);
-        public void Translate_Y(double distance) => Translation += new Vector3D(0, distance, 0);
-        public void Translate_Z(double distance) => Translation += new Vector3D(0, 0, distance);
-        public void Translate(Vector3D distance) => Translation += distance;
+        public void Translate_X(double distance) => World_Origin += new Vector3D(distance, 0, 0);
+        public void Translate_Y(double distance) => World_Origin += new Vector3D(0, distance, 0);
+        public void Translate_Z(double distance) => World_Origin += new Vector3D(0, 0, distance);
+        public void Translate(Vector3D distance) => World_Origin += distance;
         #endregion
     }
 }

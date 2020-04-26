@@ -91,7 +91,6 @@ namespace _3D_Graphics
         // Object transformations
         public Matrix4x4 Model_to_world { get; private set; }
         public Vector3D Scaling { get; protected set; } = Vector3D.One;
-        public Vector3D Translation { get; protected set; }
 
         // Scale, then rotate, then translate
         public void Calculate_Model_to_World_Matrix()
@@ -99,7 +98,7 @@ namespace _3D_Graphics
             Matrix4x4 direction_rotation = Transform.Quaternion_Rotation_Matrix(Model_Direction, World_Direction);
             Matrix4x4 direction_up_rotation = Transform.Quaternion_Rotation_Matrix(new Vector3D(direction_rotation * new Vector4D(Model_Direction_Up)), World_Direction_Up);
             Matrix4x4 scale = Transform.Scale(Scaling.X, Scaling.Y, Scaling.Z);
-            Matrix4x4 translation = Transform.Translate(Translation);
+            Matrix4x4 translation = Transform.Translate(new Vector3D(World_Origin));
 
             Model_to_world = translation * direction_up_rotation * direction_rotation * scale;
         }

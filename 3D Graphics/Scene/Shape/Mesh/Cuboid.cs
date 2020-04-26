@@ -37,18 +37,15 @@ namespace _3D_Graphics
             }
         }
 
-        public Cuboid(Vector3D origin, Vector3D direction, Vector3D direction_up, double length, double width, double height,
-            Color? vertex_colour = null,
-            Color? edge_colour = null,
-            Color? face_colour = null)
+        public Cuboid(Vector3D origin, Vector3D direction, Vector3D direction_up, double length, double width, double height)
         {
             Length = length;
             Width = width;
             Height = height;
 
-            Vertex_Colour = vertex_colour ?? Color.Blue;
-            Edge_Colour = edge_colour ?? Color.Black;
-            Face_Colour = face_colour ?? Color.FromArgb(0xFF, 0x00, 0xFF, 0x00); // Green
+            Vertex_Colour = Color.Blue;
+            Edge_Colour = Color.Black;
+            Face_Colour = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00); // Green
 
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, direction_up);
@@ -106,16 +103,14 @@ namespace _3D_Graphics
             Debug.WriteLine($"Cuboid created at {origin}");
         }
 
-        public Cuboid(Vector3D origin, Vector3D direction, Vector3D direction_up, double length, double width, double height, Bitmap texture,
-            Color? vertex_colour = null,
-            Color? edge_colour = null)
+        public Cuboid(Vector3D origin, Vector3D direction, Vector3D direction_up, double length, double width, double height, Bitmap texture)
         {
             Length = length;
             Width = width;
             Height = height;
 
-            Vertex_Colour = vertex_colour ?? Color.Blue;
-            Edge_Colour = edge_colour ?? Color.Black;
+            Vertex_Colour = Color.Blue;
+            Edge_Colour = Color.Black;
 
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, direction_up);
@@ -183,7 +178,7 @@ namespace _3D_Graphics
                 texture // 0
             };
 
-            Debug.WriteLine($"Cuboid created at {origin}";
+            Debug.WriteLine($"Cuboid created at {origin}");
         }
     }
 }
