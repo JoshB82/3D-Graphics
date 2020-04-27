@@ -33,35 +33,43 @@ namespace _3D_Graphics
             Length = length;
             Width = width;
 
-            Vertex_Colour = Color.Blue;
-            Edge_Colour = Color.Black;
-            Face_Colour = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00); // Green
-
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, normal);
 
-            Model_Vertices = new Vertex[4]
+            Model_Vertices = new Vector4D[4]
             {
-                new Vertex(0, 0, 0, Vertex_Colour), // 0
-                new Vertex(1, 0, 0, Vertex_Colour), // 1
-                new Vertex(1, 0, 1, Vertex_Colour), // 2
-                new Vertex(0, 0, 1, Vertex_Colour) // 3
+                new Vector4D(0, 0, 0), // 0
+                new Vector4D(1, 0, 0), // 1
+                new Vector4D(1, 0, 1), // 2
+                new Vector4D(0, 0, 1) // 3
+            };
+
+            Spots = new Spot[4]
+            {
+                new Spot(Model_Vertices[0]), // 0
+                new Spot(Model_Vertices[1]), // 1
+                new Spot(Model_Vertices[2]), // 2
+                new Spot(Model_Vertices[3]) // 3
             };
 
             Edges = new Edge[5]
             {
-                new Edge(Model_Vertices[0], Model_Vertices[1], Edge_Colour), // 0
-                new Edge(Model_Vertices[1], Model_Vertices[2], Edge_Colour), // 1
-                new Edge(Model_Vertices[0], Model_Vertices[2], Edge_Colour) { Visible = false }, // 2
-                new Edge(Model_Vertices[2], Model_Vertices[3], Edge_Colour), // 3
-                new Edge(Model_Vertices[0], Model_Vertices[3], Edge_Colour) //4
+                new Edge(Model_Vertices[0], Model_Vertices[1]), // 0
+                new Edge(Model_Vertices[1], Model_Vertices[2]), // 1
+                new Edge(Model_Vertices[0], Model_Vertices[2]) { Visible = false }, // 2
+                new Edge(Model_Vertices[2], Model_Vertices[3]), // 3
+                new Edge(Model_Vertices[0], Model_Vertices[3]) // 4
             };
 
             Faces = new Face[2]
             {
-                new Face(Model_Vertices[0], Model_Vertices[1], Model_Vertices[2], Face_Colour), // 0
-                new Face(Model_Vertices[0], Model_Vertices[2], Model_Vertices[3], Face_Colour) // 1
+                new Face(Model_Vertices[0], Model_Vertices[1], Model_Vertices[2]), // 0
+                new Face(Model_Vertices[0], Model_Vertices[2], Model_Vertices[3]) // 1
             };
+
+            Spot_Colour = Color.Blue;
+            Edge_Colour = Color.Black;
+            Face_Colour = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00); // Green
 
             Debug.WriteLine($"Plane created at {origin}");
         }
@@ -71,48 +79,56 @@ namespace _3D_Graphics
             Length = length;
             Width = width;
 
-            Vertex_Colour = Color.Blue;
-            Edge_Colour = Color.Black;
-
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, normal);
 
-            Model_Vertices = new Vertex[4]
+            Model_Vertices = new Vector4D[4]
             {
-                new Vertex(0, 0, 0, Vertex_Colour), // 0
-                new Vertex(1, 0, 0, Vertex_Colour), // 1
-                new Vertex(1, 0, 1, Vertex_Colour), // 2
-                new Vertex(0, 0, 1, Vertex_Colour) // 3
+                new Vector4D(0, 0, 0), // 0
+                new Vector4D(1, 0, 0), // 1
+                new Vector4D(1, 0, 1), // 2
+                new Vector4D(0, 0, 1) // 3
             };
 
-            Texture_Vertices = new Texture_Vertex[4]
+            Texture_Vertices = new Vector3D[4]
             {
                 // WHY Z=1?
-                new Texture_Vertex(0, 0, 1), // 0
-                new Texture_Vertex(1, 0, 1), // 1
-                new Texture_Vertex(0, 1, 1), // 2
-                new Texture_Vertex(1, 1, 1) // 3
+                new Vector3D(0, 0, 1), // 0
+                new Vector3D(1, 0, 1), // 1
+                new Vector3D(1, 1, 1), // 2
+                new Vector3D(0, 1, 1) // 3
+            };
+
+            Spots = new Spot[4]
+            {
+                new Spot(Model_Vertices[0]), // 0
+                new Spot(Model_Vertices[1]), // 1
+                new Spot(Model_Vertices[2]), // 2
+                new Spot(Model_Vertices[3]) // 3
             };
 
             Edges = new Edge[5]
             {
-                new Edge(Model_Vertices[0], Model_Vertices[1], Edge_Colour), // 0
-                new Edge(Model_Vertices[1], Model_Vertices[2], Edge_Colour), // 1
-                new Edge(Model_Vertices[0], Model_Vertices[2], Edge_Colour) { Visible = false }, // 2
-                new Edge(Model_Vertices[2], Model_Vertices[3], Edge_Colour), // 3
-                new Edge(Model_Vertices[0], Model_Vertices[3], Edge_Colour) //4
+                new Edge(Model_Vertices[0], Model_Vertices[1]), // 0
+                new Edge(Model_Vertices[1], Model_Vertices[2]), // 1
+                new Edge(Model_Vertices[0], Model_Vertices[2]) { Visible = false }, // 2
+                new Edge(Model_Vertices[2], Model_Vertices[3]), // 3
+                new Edge(Model_Vertices[0], Model_Vertices[3]) // 4
             };
 
             Faces = new Face[2]
             {
-                new Face(Model_Vertices[0], Model_Vertices[1], Model_Vertices[2], Texture_Vertices[3], Texture_Vertices[2], Texture_Vertices[0], texture), // 0
-                new Face(Model_Vertices[0], Model_Vertices[2], Model_Vertices[3], Texture_Vertices[3], Texture_Vertices[0], Texture_Vertices[1], texture) // 1
+                new Face(Model_Vertices[0], Model_Vertices[1], Model_Vertices[2], Texture_Vertices[0], Texture_Vertices[1], Texture_Vertices[2], texture), // 0
+                new Face(Model_Vertices[0], Model_Vertices[2], Model_Vertices[3], Texture_Vertices[0], Texture_Vertices[2], Texture_Vertices[3], texture) // 1
             };
 
             Textures = new Bitmap[1]
             {
                 texture // 0
             };
+
+            Spot_Colour = Color.Blue;
+            Edge_Colour = Color.Black;
 
             Debug.WriteLine($"Plane created at {origin}");
         }

@@ -13,7 +13,7 @@ namespace _3D_Graphics
         {
             double sin_angle = Math.Sin(angle);
             double cos_angle = Math.Cos(angle);
-            Matrix4x4 rotation = Matrix4x4.IdentityMatrix();
+            Matrix4x4 rotation = Matrix4x4.Identity_Matrix();
             rotation.Data[1][1] = cos_angle;
             rotation.Data[1][2] = -sin_angle;
             rotation.Data[2][1] = sin_angle;
@@ -30,7 +30,7 @@ namespace _3D_Graphics
         {
             double sin_angle = Math.Sin(angle);
             double cos_angle = Math.Cos(angle);
-            Matrix4x4 rotation = Matrix4x4.IdentityMatrix();
+            Matrix4x4 rotation = Matrix4x4.Identity_Matrix();
             rotation.Data[0][0] = cos_angle;
             rotation.Data[0][2] = sin_angle;
             rotation.Data[2][0] = -sin_angle;
@@ -47,7 +47,7 @@ namespace _3D_Graphics
         {
             double sin_angle = Math.Sin(angle);
             double cos_angle = Math.Cos(angle);
-            Matrix4x4 rotation = Matrix4x4.IdentityMatrix();
+            Matrix4x4 rotation = Matrix4x4.Identity_Matrix();
             rotation.Data[0][0] = cos_angle;
             rotation.Data[0][1] = -sin_angle;
             rotation.Data[1][0] = sin_angle;
@@ -72,7 +72,7 @@ namespace _3D_Graphics
             // Construct the rotation matrix
             if (angle == 0)
             {
-                return Matrix4x4.IdentityMatrix();
+                return Matrix4x4.Identity_Matrix();
             }
             else
             {
@@ -107,7 +107,7 @@ namespace _3D_Graphics
         public static Quaternion Quaternion_Rotation(Vector3D axis, double angle) => new Quaternion(Math.Cos(angle / 2), axis.Normalise() * Math.Sin(angle / 2)).Normalise();
 
         // Must supply rotation axis if vectors are antiparallel.
-        public static Quaternion Quaternion_Rotation_Between_Vectors(Vector3D v1, Vector3D v2, Vector3D rotation_axis = null)
+        public static Quaternion Quaternion_Rotation_Between_Vectors(Vector3D v1, Vector3D v2, Vector3D? rotation_axis = null)
         {
             v1 = v1.Normalise(); v2 = v2.Normalise();
             Vector3D axis = rotation_axis ?? v1.Cross_Product(v2);
@@ -137,7 +137,7 @@ namespace _3D_Graphics
                 1
             );
 
-        public static Matrix4x4 Quaternion_Rotation_Matrix(Vector3D v1, Vector3D v2, Vector3D rotation_axis = null) => Quaternion_to_Matrix(Quaternion_Rotation_Between_Vectors(v1, v2, rotation_axis));
+        public static Matrix4x4 Quaternion_Rotation_Matrix(Vector3D v1, Vector3D v2, Vector3D? rotation_axis = null) => Quaternion_to_Matrix(Quaternion_Rotation_Between_Vectors(v1, v2, rotation_axis));
         public static Matrix4x4 Quaternion_Rotation_Axis_Matrix(Vector3D axis, double angle) => Transform.Quaternion_to_Matrix(Transform.Quaternion_Rotation(axis, angle));
     }
 }

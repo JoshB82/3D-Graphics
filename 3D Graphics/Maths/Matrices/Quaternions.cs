@@ -2,7 +2,7 @@
 
 namespace _3D_Graphics
 {
-    public class Quaternion
+    public struct Quaternion
     {
         public double Q1 { get; set; }
         public double Q2 { get; set; }

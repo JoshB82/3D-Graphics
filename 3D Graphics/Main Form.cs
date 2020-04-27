@@ -9,7 +9,7 @@ namespace _3D_Graphics
     public partial class MainForm : Form
     {
         private const double grav_acc = -9.81;
-        private const double camera_pan = 0.001;
+        private const double camera_pan = 0.0005;
         private const double camera_tilt = 0.0000001;
 
         private const int max_frames_per_second = 60;
@@ -31,7 +31,7 @@ namespace _3D_Graphics
             InitializeComponent();
 
             // Create scene
-            scene = new Scene(Canvas_Box.Width, Canvas_Box.Height, Color.Black);
+            scene = new Scene(Canvas_Box.Width, Canvas_Box.Height);
 
             // Create textures
             string texture_folder = "C:\\Users\\jbrya\\source\\repos\\3D Racer\\3D Racer\\Textures\\";
@@ -69,18 +69,18 @@ namespace _3D_Graphics
             scene.Add(test_plane_shape);
 
             // Create cameras
-            Perspective_Camera camera_1 = new Perspective_Camera(new Vector3D(0, 0, 200), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 50, 750);
-            Perspective_Camera camera_2 = new Perspective_Camera(new Vector3D(0, 0, -200), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 50, 750);
+            Perspective_Camera camera_1 = new Perspective_Camera(new Vector3D(0, 0, 100), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
+            Perspective_Camera camera_2 = new Perspective_Camera(new Vector3D(0, 0, -100), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
             current_camera = camera_1;
             scene.Add(camera_1);
             scene.Add(camera_2);
 
             // Create lights
-            lights.Add(new Distant_Light(new Vector3D(300, 400, 500), cube_mesh, Color.Red, 1));
-            scene.Add(lights[0]);
+            //lights.Add(new Distant_Light(new Vector3D(300, 400, 500), cube_mesh, Color.Red, 1));
+            //scene.Add(lights[0]);
 
             // Add object from file
-            scene.Add_From_OBJ_File("C:\\Users\\jbrya\\source\\repos\\3D Racer\\3D Racer\\Models\\teapot.obj");
+            //scene.Add_From_OBJ_File("C:\\Users\\jbrya\\source\\repos\\3D Racer\\3D Racer\\Models\\teapot.obj");
 
             Thread graphics_thread = new Thread(Game_Loop);
             graphics_thread.Start();

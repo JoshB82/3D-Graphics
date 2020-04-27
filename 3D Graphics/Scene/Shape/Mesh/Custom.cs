@@ -9,7 +9,8 @@ namespace _3D_Graphics
     public sealed class Custom : Mesh
     {
         public Custom(Vector3D origin, Vector3D direction, Vector3D direction_up,
-            Vertex[] vertices,
+            Vector4D[] vertices,
+            Spot[] spots,
             Edge[] edges,
             Face[] faces)
         {
@@ -17,6 +18,7 @@ namespace _3D_Graphics
             Set_Shape_Direction_1(direction, direction_up);
 
             Model_Vertices = vertices;
+            Spots = spots;
             Edges = edges;
             Faces = faces;
 
@@ -24,16 +26,18 @@ namespace _3D_Graphics
         }
 
         public Custom(Vector3D origin, Vector3D direction, Vector3D direction_up,
-            Vertex[] vertices,
+            Vector4D[] vertices,
+            Vector3D[] texture_vertices,
+            Spot[] spots,
             Edge[] edges,
             Face[] faces,
-            Bitmap[] textures,
-            Texture_Vertex[] texture_vertices)
+            Bitmap[] textures)
         {
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, direction_up);
 
             Model_Vertices = vertices;
+            Spots = spots;
             Edges = edges;
             Faces = faces;
             Textures = textures;

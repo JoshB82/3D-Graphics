@@ -9,7 +9,7 @@
         /// <returns>A translation matrix.</returns>
         public static Matrix4x4 Translate_X(double distance)
         {
-            Matrix4x4 translation = Matrix4x4.IdentityMatrix();
+            Matrix4x4 translation = Matrix4x4.Identity_Matrix();
             translation.Data[0][3] = distance;
             return translation;
         }
@@ -21,7 +21,7 @@
         /// <returns>A translation matrix.</returns>
         public static Matrix4x4 Translate_Y(double distance)
         {
-            Matrix4x4 translation = Matrix4x4.IdentityMatrix();
+            Matrix4x4 translation = Matrix4x4.Identity_Matrix();
             translation.Data[1][3] = distance;
             return translation;
         }
@@ -33,7 +33,7 @@
         /// <returns>A translation matrix.</returns>
         public static Matrix4x4 Translate_Z(double distance)
         {
-            Matrix4x4 translation = Matrix4x4.IdentityMatrix();
+            Matrix4x4 translation = Matrix4x4.Identity_Matrix();
             translation.Data[2][3] = distance;
             return translation;
         }
@@ -47,7 +47,7 @@
         /// <returns>A translation matrix.</returns>
         public static Matrix4x4 Translate(double distance_x, double distance_y, double distance_z)
         {
-            Matrix4x4 translation = Matrix4x4.IdentityMatrix();
+            Matrix4x4 translation = Matrix4x4.Identity_Matrix();
             translation.Data[0][3] = distance_x;
             translation.Data[1][3] = distance_y;
             translation.Data[2][3] = distance_z;
@@ -61,7 +61,7 @@
         /// <returns>A translation matrix.</returns>
         public static Matrix4x4 Translate(Vector3D distance)
         {
-            Matrix4x4 translation = Matrix4x4.IdentityMatrix();
+            Matrix4x4 translation = Matrix4x4.Identity_Matrix();
             translation.Data[0][3] = distance.X;
             translation.Data[1][3] = distance.Y;
             translation.Data[2][3] = distance.Z;

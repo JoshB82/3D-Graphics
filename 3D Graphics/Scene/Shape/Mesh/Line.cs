@@ -7,27 +7,33 @@ namespace _3D_Graphics
     {
         public Line(Vector3D start_position, Vector3D end_position)
         {
-            Vertex_Colour = Color.Blue;
-            Edge_Colour = Color.Black;
-
             World_Origin = new Vector4D(start_position);
             Set_Shape_Direction_1(Vector3D.Unit_X, Vector3D.Unit_Y);
 
-            Model_Vertices = new Vertex[2]
+            Model_Vertices = new Vector4D[2]
             {
-                new Vertex(0, 0, 0, Vertex_Colour),
-                new Vertex(1, 1, 1, Vertex_Colour)
+                new Vector4D(0, 0, 0), // 0
+                new Vector4D(1, 1, 1) // 1
+            };
+
+            Spots = new Spot[]
+            {
+                new Spot(Model_Vertices[0]), // 0
+                new Spot(Model_Vertices[1]) // 1
             };
 
             Edges = new Edge[1]
             {
-                new Edge(Model_Vertices[0], Model_Vertices[1], Edge_Colour)
+                new Edge(Model_Vertices[0], Model_Vertices[1]) // 0
             };
 
             Draw_Faces = false;
 
             Vector3D line_vector = end_position - start_position;
             Scaling = new Vector3D(line_vector.X, line_vector.Y, line_vector.Z);
+
+            Spot_Colour = Color.Blue;
+            Edge_Colour = Color.Black;
 
             Debug.WriteLine($"Line created at {start_position}");
         }

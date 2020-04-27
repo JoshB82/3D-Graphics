@@ -106,10 +106,10 @@ namespace _3D_Graphics
             {
                 try
                 {
-                    List<Vertex> vertices = new List<Vertex>();
+                    List<Vector4D> vertices = new List<Vector4D>();
                     List<Edge> edges = new List<Edge>();
                     List<Face> faces = new List<Face>();
-                    List<Texture_Vertex> texture_vertices = new List<Texture_Vertex>();
+                    List<Vector3D> texture_vertices = new List<Vector3D>();
 
                     string[] lines = File.ReadAllLines(file_path);
                     foreach (string line in lines)
@@ -129,14 +129,14 @@ namespace _3D_Graphics
                                 y = Double.Parse(data[2]);
                                 z = Double.Parse(data[3]);
                                 w = (data.Length == 5) ? Double.Parse(data[4]) : 1;
-                                vertices.Add(new Vertex(x, y, z, w));
+                                vertices.Add(new Vector4D(x, y, z, w));
                                 break;
                             case "vt":
                                 // Texture vertex
                                 u = Double.Parse(data[1]);
                                 v = (data.Length > 2) ? Double.Parse(data[2]) : 0;
                                 w = (data.Length == 4) ? Double.Parse(data[3]) : 0;
-                                texture_vertices.Add(new Texture_Vertex(u, v, w));
+                                texture_vertices.Add(new Vector3D(u, v, w));
                                 break;
                             case "l":
                                 // Line (or polyline)
@@ -161,7 +161,7 @@ namespace _3D_Graphics
                         }
                     }
 
-                    Add(new Shape(new Custom(new Vector3D(vertices[0]), Vector3D.Unit_X, Vector3D.Unit_Y, vertices.ToArray(), edges.ToArray(), faces.ToArray())));
+                    Add(new Shape(new Custom(new Vector3D(vertices[0]), Vector3D.Unit_X, Vector3D.Unit_Y, vertices.ToArray(), null, edges.ToArray(), faces.ToArray())));
                     return true;
                 }
                 catch (Exception error)
@@ -182,9 +182,9 @@ namespace _3D_Graphics
             lock (locker) Shape_List.RemoveAll(x => x.ID == ID);
         }
 
-        private static bool Clip_Line(Vector3D plane_point, Vector3D plane_normal, Edge e)
+        private static bool Clip_Edge(Vector3D plane_point, Vector3D plane_normal, ref Edge e)
         {
-            Vector3D point_1 = new Vector3D(e.P1), point_2 = new Vector3D(e.P2);
+            Vector3D point_1 = new Vector3D(e.World_P1), point_2 = new Vector3D(e.World_P2);
             double point_1_distance = Vector3D.Point_Distance_From_Plane(point_1, plane_point, plane_normal);
             double point_2_distance = Vector3D.Point_Distance_From_Plane(point_2, plane_point, plane_normal);
 
@@ -197,16 +197,16 @@ namespace _3D_Graphics
             {
                 // One point is on the inside, the other on the outside, so clip the line
                 Vector4D intersection = new Vector4D(Vector3D.Line_Intersect_Plane(point_1, point_2, plane_point, plane_normal, out double d));
-                e.P1 = e.P1;
-                e.P2 = intersection;
+                e.World_P1 = e.World_P1;
+                e.World_P2 = intersection;
                 return true;
             }
             if (point_1_distance < 0 && point_2_distance >= 0)
             {
                 // One point is on the outside, the other on the inside, so clip the line
                 Vector4D intersection = new Vector4D(Vector3D.Line_Intersect_Plane(point_2, point_1, plane_point, plane_normal, out double d));
-                e.P1 = e.P2;
-                e.P2 = intersection;
+                e.World_P1 = e.World_P2;
+                e.World_P2 = intersection;
                 return true;
             }
             // Both points are on the outside, so discard the line
@@ -215,8 +215,8 @@ namespace _3D_Graphics
 
         private static int Clip_Face(Vector3D plane_point, Vector3D plane_normal, Face f, out Face f1, out Face f2)
         {
-            f1 = null; f2 = null;
-            Vector3D point_1 = new Vector3D(f.P1), point_2 = new Vector3D(f.P2), point_3 = new Vector3D(f.P3);
+            f1 = new Face(); f2 = new Face();
+            Vector3D point_1 = new Vector3D(f.World_P1), point_2 = new Vector3D(f.World_P2), point_3 = new Vector3D(f.World_P3);
             int inside_point_count = 0;
             List<Vector3D> inside_points = new List<Vector3D>(3);
             List<Vector3D> outside_points = new List<Vector3D>(3);
@@ -326,7 +326,7 @@ namespace _3D_Graphics
                 camera.Apply_World_Matrix();
                 camera.Calculate_World_to_Screen_Matrix();
 
-                // Clipping planes
+                // Clipping planes (Make these a property of camera?
                 Clipping_Plane[] world_clipping_planes = camera.Calculate_Clipping_Planes();
                 Vector3D near_bottom_left_point = new Vector3D(-1, -1, -1), far_top_right_point = new Vector3D(1, 1, 1);
                 Clipping_Plane[] projection_clipping_planes = new Clipping_Plane[]
@@ -418,38 +418,37 @@ namespace _3D_Graphics
         // Only do at drawing stage? v
         public Vector4D Change_Y_Axis(Vector4D vertex) => Transform.Translate(new Vector3D(0, Height - 1, 0)) * Transform.Scale_Y(-1) * vertex;
 
-        public void Draw_Vertex(Vertex vertex)
+        public void Draw_Spot(Spot spot)
         {
 
         }
 
         public void Draw_Edge(Edge edge, Camera camera, Clipping_Plane[] world_clipping_planes, Clipping_Plane[] projection_clipping_planes)
         {
-            // Create a copy of the edge
-            Vector4D point_1 = new Vector4D(edge.P1.X, edge.P1.Y, edge.P1.Z);
-            Vector4D point_2 = new Vector4D(edge.P2.X, edge.P2.Y, edge.P2.Z);
-            Edge clip_edge = new Edge(point_1, point_2, edge.Colour) { Visible = edge.Visible };
-
             // Clip the edge in world space
             foreach (Clipping_Plane world_clipping_plane in world_clipping_planes)
             {
-                if (!Clip_Line(world_clipping_plane.Point, world_clipping_plane.Normal, clip_edge)) return;
+                if (!Clip_Edge(world_clipping_plane.Point, world_clipping_plane.Normal, ref edge)) return;
             }
 
-            clip_edge.P1 = camera.Apply_Camera_Matrices(clip_edge.P1);
-            clip_edge.P2 = camera.Apply_Camera_Matrices(clip_edge.P2);
+            // Transform the edge into screen space and correct for perspective
+            edge.World_P1 = camera.World_to_screen * edge.World_P1;
+            edge.World_P2 = camera.World_to_screen * edge.World_P2;
 
-            clip_edge.P1 = camera.Divide_By_W(clip_edge.P1);
-            clip_edge.P2 = camera.Divide_By_W(clip_edge.P2);
+            edge.World_P1 /= edge.World_P1.W;
+            edge.World_P2 /= edge.World_P2.W;
 
+            // Clip the edge in screen space
             foreach (Clipping_Plane projection_clipping_plane in projection_clipping_planes)
             {
-                if (!Clip_Line(projection_clipping_plane.Point, projection_clipping_plane.Normal, clip_edge)) return;
+                if (!Clip_Edge(projection_clipping_plane.Point, projection_clipping_plane.Normal, ref edge)) return;
             }
 
-            Vector4D result_point_1 = Scale_to_screen(edge.P1);
-            Vector4D result_point_2 = Scale_to_screen(edge.P2);
-
+            // Scale to the full screen size
+            Vector4D result_point_1 = Scale_to_screen(edge.World_P1);
+            Vector4D result_point_2 = Scale_to_screen(edge.World_P2);
+            
+            // Invert y-axis for drawing
             result_point_1 = Change_Y_Axis(result_point_1);
             result_point_2 = Change_Y_Axis(result_point_2);
 
@@ -466,38 +465,23 @@ namespace _3D_Graphics
 
         public void Draw_Face(Face face, Camera camera, Clipping_Plane[] world_clipping_planes, Clipping_Plane[] projection_clipping_planes, string shape_type)
         {
-            // Create a copy of the face
-            Vector4D point_1 = new Vector4D(face.P1.X, face.P1.Y, face.P1.Z);
-            Vector4D point_2 = new Vector4D(face.P2.X, face.P2.Y, face.P2.Z);
-            Vector4D point_3 = new Vector4D(face.P3.X, face.P3.Y, face.P3.Z);
-
+            /*
             Vector3D texture_point_1 = null, texture_point_2 = null, texture_point_3 = null;
             Face clip_face;
-            if (face.Texture == null)
-            {
-                clip_face = new Face(point_1, point_2, point_3, face.Colour) { Draw_Outline = face.Draw_Outline, Visible = face.Visible };
-            }
-            else
-            {
-                texture_point_1 = new Vector3D(face.T1.X, face.T1.Y, face.T1.Z);
-                texture_point_2 = new Vector3D(face.T2.X, face.T2.Y, face.T2.Z);
-                texture_point_3 = new Vector3D(face.T3.X, face.T3.Y, face.T3.Z);
-
-                clip_face = new Face(point_1, point_2, point_3, texture_point_1, texture_point_2, texture_point_3, face.Texture) { Draw_Outline = face.Draw_Outline, Visible = face.Visible };
-            }
-
-            Vector3D normal = Vector3D.Normal_From_Plane(new Vector3D(point_1), new Vector3D(point_2), new Vector3D(point_3));
-            Vector3D camera_to_face = new Vector3D(point_1 - camera.World_Origin);
+            */
+            
+            Vector3D normal = Vector3D.Normal_From_Plane(new Vector3D(face.World_P1), new Vector3D(face.World_P2), new Vector3D(face.World_P3));
+            Vector3D camera_to_face = new Vector3D(face.World_P1 - camera.World_Origin);
 
             // Discard face if its not visible
             if (camera_to_face * normal >= 0 && shape_type != "Plane") return;
 
             // Draw outline if needed
-            if (clip_face.Draw_Outline)
+            if (face.Draw_Outline)
             {
-                Draw_Edge(new Edge(clip_face.P1, clip_face.P2), camera, world_clipping_planes, projection_clipping_planes);
-                Draw_Edge(new Edge(clip_face.P1, clip_face.P3), camera, world_clipping_planes, projection_clipping_planes);
-                Draw_Edge(new Edge(clip_face.P2, clip_face.P3), camera, world_clipping_planes, projection_clipping_planes);
+                Draw_Edge(new Edge(face.World_P1, face.World_P2), camera, world_clipping_planes, projection_clipping_planes);
+                Draw_Edge(new Edge(face.World_P1, face.World_P3), camera, world_clipping_planes, projection_clipping_planes);
+                Draw_Edge(new Edge(face.World_P2, face.World_P3), camera, world_clipping_planes, projection_clipping_planes);
             }
 
             /*
@@ -541,12 +525,9 @@ namespace _3D_Graphics
             }
             */
 
-            // Create a queue
+            // Create a clipping queue and add the first triangle
             Queue<Face> world_face_clip = new Queue<Face>();
-
-            // Add initial triangle to clipping queue
-            world_face_clip.Enqueue(clip_face);
-
+            world_face_clip.Enqueue(face);
             int no_triangles = 1;
 
             //OUT?
@@ -567,27 +548,31 @@ namespace _3D_Graphics
             // Discard face if its been fully clipped
             if (no_triangles == 0) return;
 
-            Queue<Face> projection_face_clip = world_face_clip;
+            Face[] projection_face_clip_array = world_face_clip.ToArray();
 
             // Move remaining faces into projection space
-            foreach (Face projection_clipped_face in projection_face_clip)
+            // Not entirely sure why can't use foreach loop :/
+            for (int i = 0; i < projection_face_clip_array.Length; i++)
             {
-                projection_clipped_face.P1 = camera.Apply_Camera_Matrices(projection_clipped_face.P1);
-                projection_clipped_face.P2 = camera.Apply_Camera_Matrices(projection_clipped_face.P2);
-                projection_clipped_face.P3 = camera.Apply_Camera_Matrices(projection_clipped_face.P3);
+                projection_face_clip_array[i].World_P1 = camera.World_to_screen * projection_face_clip_array[i].World_P1;
+                projection_face_clip_array[i].World_P2 = camera.World_to_screen * projection_face_clip_array[i].World_P2;
+                projection_face_clip_array[i].World_P3 = camera.World_to_screen * projection_face_clip_array[i].World_P3;
 
-                projection_clipped_face.P1 = camera.Divide_By_W(projection_clipped_face.P1);
-                projection_clipped_face.P2 = camera.Divide_By_W(projection_clipped_face.P2);
-                projection_clipped_face.P3 = camera.Divide_By_W(projection_clipped_face.P3);
+                projection_face_clip_array[i].World_P1 /= projection_face_clip_array[i].World_P1.W;
+                projection_face_clip_array[i].World_P2 /= projection_face_clip_array[i].World_P2.W;
+                projection_face_clip_array[i].World_P3 /= projection_face_clip_array[i].World_P3.W;
 
                 /*
                 if (face.Texture != null)
                 {
-                    projection_clipped_face.T1 /= projection_clipped_face.P1.W;
-                    projection_clipped_face.T2 /= projection_clipped_face.P1.W;
-                    projection_clipped_face.T3 /= projection_clipped_face.P1.W;
+                    projection_clipped_face.T1 /= projection_clipped_face.World_P1.W;
+                    projection_clipped_face.T2 /= projection_clipped_face.World_P1.W;
+                    projection_clipped_face.T3 /= projection_clipped_face.World_P1.W;
                 }*/
             }
+
+            // Create another clipping queue and add the first triangle
+            Queue<Face> projection_face_clip = new Queue<Face>(projection_face_clip_array);
 
             // Clip face against each projection clipping plane
             foreach (Clipping_Plane projection_clipping_plane in projection_clipping_planes)
@@ -605,9 +590,9 @@ namespace _3D_Graphics
 
             foreach (Face projection_clipped_face in projection_face_clip)
             {
-                Vector4D result_point_1 = Scale_to_screen(projection_clipped_face.P1);
-                Vector4D result_point_2 = Scale_to_screen(projection_clipped_face.P2);
-                Vector4D result_point_3 = Scale_to_screen(projection_clipped_face.P3);
+                Vector4D result_point_1 = Scale_to_screen(projection_clipped_face.World_P1);
+                Vector4D result_point_2 = Scale_to_screen(projection_clipped_face.World_P2);
+                Vector4D result_point_3 = Scale_to_screen(projection_clipped_face.World_P3);
 
                 result_point_1 = Change_Y_Axis(result_point_1);
                 result_point_2 = Change_Y_Axis(result_point_2);
@@ -636,12 +621,12 @@ namespace _3D_Graphics
                     int height = face.Texture.Height - 1;
 
                     // AFTERWARDS?
-                    int result_texture_point_1_x = Round_To_Int(texture_point_1.X * width);
-                    int result_texture_point_1_y = Round_To_Int(texture_point_1.Y * height);
-                    int result_texture_point_2_x = Round_To_Int(texture_point_2.X * width);
-                    int result_texture_point_2_y = Round_To_Int(texture_point_2.Y * height);
-                    int result_texture_point_3_x = Round_To_Int(texture_point_3.X * width);
-                    int result_texture_point_3_y = Round_To_Int(texture_point_3.Y * height);
+                    int result_texture_point_1_x = Round_To_Int(face.T1.X * width);
+                    int result_texture_point_1_y = Round_To_Int(face.T1.Y * height);
+                    int result_texture_point_2_x = Round_To_Int(face.T2.X * width);
+                    int result_texture_point_2_y = Round_To_Int(face.T2.Y * height);
+                    int result_texture_point_3_x = Round_To_Int(face.T3.X * width);
+                    int result_texture_point_3_y = Round_To_Int(face.T3.Y * height);
 
                     Textured_Triangle(result_point_1_x, result_point_1_y, result_point_1_z, result_point_2_x, result_point_2_y, result_point_2_z, result_point_3_x, result_point_3_y, result_point_3_z, result_texture_point_1_x, result_texture_point_1_y, result_texture_point_2_x, result_texture_point_2_y, result_texture_point_3_x, result_texture_point_3_y, face.Texture);
                 }

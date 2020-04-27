@@ -21,7 +21,7 @@ namespace _3D_Graphics
             if (z <= z_buffer[x][y])
             {
                 z_buffer[x][y] = z;
-                colour_buffer[x][y] = texture.GetPixel(tx, ty);
+                colour_buffer[x][y] = texture.GetPixel(tx, ty * -1 + texture.Height - 1);
             }
         }
 

@@ -5,7 +5,7 @@ namespace _3D_Graphics
     /// <summary>
     /// Handles constructors and operations involving three-dimensional vectors.
     /// </summary>
-    public class Vector3D
+    public struct Vector3D
     {
         public double X { get; set; }
         public double Y { get; set; }

@@ -2,23 +2,25 @@
 
 namespace _3D_Graphics
 {
-    public class Matrix4x4
+    public struct Matrix4x4
     {
+        // init as double[4][4]?
         public double[][] Data { get; set; }
 
         /// <summary>
         /// Creates a zeroed 4x4 matrix.
         /// </summary>
-        public Matrix4x4()
+        public static Matrix4x4 Zeroed_Matrix()
         {
-            Data = new double[4][];
-            for (int i = 0; i < 4; i++) Data[i] = new double[4];
+            double[][] data = new double[4][];
+            for (int i = 0; i < 4; i++) data[i] = new double[4];
+            return new Matrix4x4(data);
         }
 
         /// <summary>
         /// Creates an 4x4 identity matrix.
         /// </summary>
-        public static Matrix4x4 IdentityMatrix()
+        public static Matrix4x4 Identity_Matrix()
         {
             double[][] data = new double[4][];
             for (int i = 0; i < 4; i++)
@@ -89,17 +91,6 @@ namespace _3D_Graphics
                 m.Data[2][0] * v.X + m.Data[2][1] * v.Y + m.Data[2][2] * v.Z + m.Data[2][3] * v.W,
                 m.Data[3][0] * v.X + m.Data[3][1] * v.Y + m.Data[3][2] * v.Z + m.Data[3][3] * v.W
             );
-        }
-
-        public static Vertex operator *(Matrix4x4 m, Vertex v)
-        {
-            return new Vertex(
-                m.Data[0][0] * v.X + m.Data[0][1] * v.Y + m.Data[0][2] * v.Z + m.Data[0][3] * v.W,
-                m.Data[1][0] * v.X + m.Data[1][1] * v.Y + m.Data[1][2] * v.Z + m.Data[1][3] * v.W,
-                m.Data[2][0] * v.X + m.Data[2][1] * v.Y + m.Data[2][2] * v.Z + m.Data[2][3] * v.W,
-                m.Data[3][0] * v.X + m.Data[3][1] * v.Y + m.Data[3][2] * v.Z + m.Data[3][3] * v.W,
-                v.Colour)
-            { Diameter = v.Diameter, Visible = v.Visible };
         }
 
         /*

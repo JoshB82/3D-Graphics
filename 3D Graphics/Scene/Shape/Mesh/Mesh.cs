@@ -5,28 +5,27 @@ namespace _3D_Graphics
 {
     public abstract partial class Mesh
     {
+        // SORT OUT!
         #region Structure
         public Vector4D Model_Origin { get; } = Vector4D.Zero;
         public Vector4D World_Origin { get; set; }
-        public Vector4D Camera_Origin { get; protected set; }
 
-        private Vertex[] model_vertices;
-        public Vertex[] Model_Vertices
+        private Vector4D[] model_vertices;
+        public Vector4D[] Model_Vertices
         {
             get { return model_vertices; }
             protected set
             {
                 model_vertices = value;
-                World_Vertices = new Vertex[value.Length];
-                Camera_Vertices = new Vertex[value.Length];
+                World_Vertices = new Vector4D[value.Length];
             }
         }
-        public Vertex[] World_Vertices { get; private set; }
-        public Vertex[] Camera_Vertices { get; protected set; }
+        public Vector4D[] World_Vertices { get; protected set; }
 
-        public Texture_Vertex[] Texture_Vertices { get; protected set; }
+        public Vector3D[] Texture_Vertices { get; protected set; }
         public Bitmap[] Textures { get; protected set; }
 
+        public Spot[] Spots { get; protected set; }
         public Edge[] Edges { get; protected set; }
         public Face[] Faces { get; protected set; }
         #endregion
@@ -67,15 +66,43 @@ namespace _3D_Graphics
         #endregion
 
         #region Draw settings
-        public bool Draw_Vertices { get; set; } = true;
+        public bool Draw_Spots { get; set; } = true;
         public bool Draw_Edges { get; set; } = true;
         public bool Draw_Faces { get; set; } = true;
         #endregion
 
         #region Colours
-        public Color Vertex_Colour { get; set; }
-        public Color Edge_Colour { get; set; }
-        public Color Face_Colour { get; set; }
+        private Color spot_colour, edge_colour, face_colour;
+        public Color Spot_Colour
+        {
+            get { return spot_colour; }
+            set
+            {
+                spot_colour = value;
+                // Not entirely sure why can't use foreach loop :/
+                for (int i = 0; i < Spots.Length; i++) Spots[i].Colour = value;
+            }
+        }
+        public Color Edge_Colour
+        {
+            get { return edge_colour; }
+            set
+            {
+                edge_colour = value;
+                // Not entirely sure why can't use foreach loop :/
+                for (int i = 0; i < Edges.Length; i++) Edges[i].Colour = value;
+            }
+        }
+        public Color Face_Colour
+        {
+            get { return face_colour; }
+            set
+            {
+                face_colour = value;
+                // Not entirely sure why can't use foreach loop :/
+                for (int i = 0; i < Faces.Length; i++) Faces[i].Colour = value;
+            }
+        }
         #endregion
 
         // Miscellaneous
@@ -103,10 +130,29 @@ namespace _3D_Graphics
             Model_to_world = translation * direction_up_rotation * direction_rotation * scale;
         }
 
+        // Could world and model points be put into a single struct? With overloading possibly so the computer knows how to handle them?
         public void Apply_World_Matrices()
         {
             World_Origin = Model_to_world * Model_Origin;
             for (int i = 0; i < Model_Vertices.Length; i++) World_Vertices[i] = Model_to_world * Model_Vertices[i];
+            if (Draw_Spots) for (int i = 0; i < Spots.Length; i++) Spots[i].World_Point = Model_to_world * Spots[i].Model_Point;
+            if (Draw_Edges)
+            {
+                for (int i = 0; i < Edges.Length; i++)
+                {
+                    Edges[i].World_P1 = Model_to_world * Edges[i].Model_P1;
+                    Edges[i].World_P2 = Model_to_world * Edges[i].Model_P2;
+                }
+            }
+            if (Draw_Faces)
+            {
+                for (int i = 0; i < Faces.Length; i++)
+                {
+                    Faces[i].World_P1 = Model_to_world * Faces[i].Model_P1;
+                    Faces[i].World_P2 = Model_to_world * Faces[i].Model_P2;
+                    Faces[i].World_P3 = Model_to_world * Faces[i].Model_P3;
+                }
+            }
         }
     }
 }

@@ -5,17 +5,17 @@ namespace _3D_Graphics
 {
     public sealed class Point_Light : Light
     {
-        public Point_Light(Vector3D position, Vector3D direction, Color? colour, double intensity)
+        public Point_Light(Vector3D origin, Vector3D direction, Color? colour, double intensity)
         {
-            Translation = position;
-            World_Origin = new Vector4D(position);
+            Translation = origin;
+            World_Origin = new Vector4D(origin);
             World_Direction = direction;
             Colour = colour ?? Color.White;
             Intensity = intensity;
 
-            Debug.WriteLine($"Point light created at ({position.X}, {position.Y}, {position.Z})");
+            Debug.WriteLine($"Point light created at {origin}");
         }
 
-        public Point_Light(Vector3D position, Mesh pointed_at, Color? colour, double intensity) : this(position, new Vector3D(pointed_at.World_Origin) - position, colour, intensity) { }
+        public Point_Light(Vector3D origin, Mesh pointed_at, Color? colour, double intensity) : this(origin, new Vector3D(pointed_at.World_Origin) - origin, colour, intensity) { }
     }
 }

@@ -55,10 +55,6 @@ namespace _3D_Graphics
 
         public abstract Clipping_Plane[] Calculate_Clipping_Planes();
 
-        public Vector4D Apply_Camera_Matrices(Vector4D vertex) => World_to_screen * vertex;
-
-        public Vector4D Divide_By_W(Vector4D vertex) => vertex / vertex.W;
-
         public Camera(Vector3D origin, Vector3D direction, Vector3D direction_up)
         {
             World_Origin = new Vector4D(origin);
@@ -102,7 +98,7 @@ namespace _3D_Graphics
 
         public Orthogonal_Camera(Vector3D origin, Vector3D direction, Vector3D direction_up, double width, double height, double z_near, double z_far) : base(origin, direction, direction_up)
         {
-            Camera_to_screen = Matrix4x4.IdentityMatrix();
+            Camera_to_screen = Matrix4x4.Identity_Matrix();
             Width = width;
             Height = height;
             Z_Near = z_near;
@@ -184,7 +180,7 @@ namespace _3D_Graphics
 
         public Perspective_Camera(Vector3D origin, Vector3D direction, Vector3D direction_up, double width, double height, double z_near, double z_far) : base(origin, direction, direction_up)
         {
-            Camera_to_screen = new Matrix4x4();
+            Camera_to_screen = Matrix4x4.Zeroed_Matrix();
             Camera_to_screen.Data[3][2] = -1;
 
             Z_Near = z_near;

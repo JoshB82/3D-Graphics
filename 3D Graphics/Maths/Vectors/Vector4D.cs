@@ -5,7 +5,7 @@ namespace _3D_Graphics
     /// <summary>
     /// Handles constructors and operations involving four-dimensional vectors for use in 3D graphics.
     /// </summary>
-    public class Vector4D
+    public struct Vector4D
     {
         public double X { get; set; }
         public double Y { get; set; }
