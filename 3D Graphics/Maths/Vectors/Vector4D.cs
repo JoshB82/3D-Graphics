@@ -48,7 +48,12 @@ namespace _3D_Graphics
         #endregion
 
         #region Vector Operations (Common)
-        public double Angle(Vector4D v) => Math.Acos((this * v) / (this.Magnitude() * v.Magnitude()));
+        public double Angle(Vector4D v)
+        {
+            double quotient = (this * v) / (this.Magnitude() * v.Magnitude());
+            if (quotient < -1) quotient = -1; if (quotient > 1) quotient = 1;
+            return Math.Acos(quotient);
+        }
 
         public Vector4D Cross_Product(Vector4D v) => new Vector4D(this.Y * v.Z - this.Z * v.Y, this.Z * v.X - this.X * v.Z, this.X * v.Y - this.Y * v.X, this.W);
 
@@ -62,7 +67,7 @@ namespace _3D_Graphics
         #region Vector Operations (Operator Overloading)
         public static Vector4D operator +(Vector4D v1, Vector4D v2) => new Vector4D(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z, v1.W + v2.W);
         public static Vector4D operator +(Vector4D v1, Vector3D v2) => new Vector4D(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z, v1.W);
-        public static Vector4D operator -(Vector4D v1, Vector4D v2) => new Vector4D(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z, v1.W - v2.W);
+        public static Vector4D operator -(Vector4D v1, Vector4D v2) => new Vector4D(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z, v1.W);
         public static double operator *(Vector4D v1, Vector4D v2) => v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z + v1.W * v2.W;
         public static Vector4D operator *(Vector4D v, double scalar) => new Vector4D(v.X * scalar, v.Y * scalar, v.Z * scalar, v.W * scalar);
         public static Vector4D operator /(Vector4D v, double scalar) => new Vector4D(v.X / scalar, v.Y / scalar, v.Z / scalar, v.W / scalar);

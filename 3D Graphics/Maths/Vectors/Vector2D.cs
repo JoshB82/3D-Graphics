@@ -33,7 +33,12 @@ namespace _3D_Graphics
         #endregion
 
         #region Vector Operations (Common)
-        public double Angle(Vector2D v) => Math.Acos((this * v) / (this.Magnitude() * v.Magnitude()));
+        public double Angle(Vector2D v)
+        {
+            double quotient = (this * v) / (this.Magnitude() * v.Magnitude());
+            if (quotient < -1) quotient = -1; if (quotient > 1) quotient = 1;
+            return Math.Acos(quotient);
+        }
 
         public double Magnitude() => Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
 

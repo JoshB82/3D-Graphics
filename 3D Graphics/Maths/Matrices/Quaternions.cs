@@ -45,6 +45,8 @@ namespace _3D_Graphics
         public double Magnitude() => Math.Sqrt(Math.Pow(Q1, 2) + Math.Pow(Q2, 2) + Math.Pow(Q3, 2) + Math.Pow(Q4, 2));
 
         public Quaternion Normalise() => this / Magnitude();
+
+        public override string ToString() => $"({Q1}, {Q2}, {Q3}, {Q4})";
         #endregion
 
         #region Quaternion Operations (Operator Overloading)

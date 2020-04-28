@@ -10,6 +10,7 @@ namespace _3D_Graphics
         /// <summary>
         /// Creates a zeroed 4x4 matrix.
         /// </summary>
+        // why no parameterless constructor?
         public static Matrix4x4 Zeroed_Matrix()
         {
             double[][] data = new double[4][];
@@ -45,6 +46,12 @@ namespace _3D_Graphics
             if (data.Length != 4 || data[0].Length != 4 || data[1].Length != 4 || data[2].Length != 4 || data[3].Length != 4) throw new Exception("Array must be of size 4x4.");
             Data = data;
         }
+
+        public override string ToString() =>
+            $"({Data[0][0]}, {Data[0][1]}, {Data[0][2]}, {Data[0][3]} \n" +
+            $"{Data[1][0]}, {Data[1][1]}, {Data[1][2]}, {Data[1][3]} \n" +
+            $"{Data[2][0]}, {Data[2][1]}, {Data[2][2]}, {Data[2][3]} \n" +
+            $"{Data[3][0]}, {Data[3][1]}, {Data[3][2]}, {Data[3][3]})";
 
         #region Operator overloading
         public static Matrix4x4 operator +(Matrix4x4 m1, Matrix4x4 m2)

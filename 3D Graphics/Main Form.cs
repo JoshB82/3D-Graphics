@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-
+using System.Diagnostics;
 namespace _3D_Graphics
 {
     public partial class MainForm : Form
     {
         private const double grav_acc = -9.81;
         private const double camera_pan = 0.0005;
-        private const double camera_tilt = 0.0000001;
+        private const double camera_tilt = 0.000001;
 
         private const int max_frames_per_second = 60;
         private const int max_updates_per_second = 60;
@@ -34,22 +34,26 @@ namespace _3D_Graphics
             scene = new Scene(Canvas_Box.Width, Canvas_Box.Height);
 
             // Create textures
-            string texture_folder = "C:\\Users\\jbrya\\source\\repos\\3D Racer\\3D Racer\\Textures\\";
+            string texture_folder = "C:\\Users\\jbrya\\source\\repos\\3D Graphics\\3D Graphics\\Textures\\";
             Bitmap brick = new Bitmap(texture_folder + "brick.bmp");
             Bitmap smiley = new Bitmap(texture_folder + "smiley.jpg");
 
             // Create default meshes
+            /*
             Cube cube_mesh = new Cube(new Vector3D(0, 0, 0), Vector3D.Unit_X, Vector3D.Unit_Y, 50) { Face_Colour = Color.Green };
             Shape cube = new Shape(cube_mesh) { Selected = true };
             scene.Add(cube);
+            */
 
             Cuboid cuboid_mesh = new Cuboid(new Vector3D(100, 0, 100), Vector3D.Unit_X, Vector3D.Unit_Y, 30, 40, 90, smiley);
             Shape cuboid = new Shape(cuboid_mesh);
             scene.Add(cuboid);
-
+            
+            /*
             Plane plane_mesh = new Plane(new Vector3D(0, 0, -30), Vector3D.Unit_X, Vector3D.Unit_Y, 100, 100) { Face_Colour = Color.Aqua };
             Shape plane = new Shape(plane_mesh);
             scene.Add(plane);
+            */
 
             // Create axes
             Line x_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(250, 0, 0)) { Edge_Colour = Color.Red };
@@ -64,13 +68,13 @@ namespace _3D_Graphics
             scene.Add(y_axis);
             scene.Add(z_axis);
 
-            Plane test_plane = new Plane(new Vector3D(100, 100, 100), Vector3D.Unit_Y, Vector3D.Unit_Z, 50, 50, smiley);
+            Plane test_plane = new Plane(Vector3D.Zero, Vector3D.Unit_X, Vector3D.Unit_Y, 50, 50, smiley);
             Shape test_plane_shape = new Shape(test_plane);
             scene.Add(test_plane_shape);
 
             // Create cameras
-            Perspective_Camera camera_1 = new Perspective_Camera(new Vector3D(0, 0, 100), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
-            Perspective_Camera camera_2 = new Perspective_Camera(new Vector3D(0, 0, -100), cube_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
+            Perspective_Camera camera_1 = new Perspective_Camera(new Vector3D(0, 0, 100), test_plane, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
+            Perspective_Camera camera_2 = new Perspective_Camera(new Vector3D(0, 0, -100), test_plane, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
             current_camera = camera_1;
             scene.Add(camera_1);
             scene.Add(camera_2);
@@ -174,7 +178,7 @@ namespace _3D_Graphics
                 case Keys.I:
                     // Rotate up
                     Matrix4x4 transformation_up = Transform.Quaternion_Rotation_Axis_Matrix(current_camera.World_Direction_Right, camera_tilt * update_time);
-                    current_camera.Set_Camera_Direction_3(new Vector3D(transformation_up * new Vector4D(current_camera.World_Direction_Right)), new Vector3D(transformation_up * new Vector4D(current_camera.World_Direction)));
+                    current_camera.Set_Camera_Direction_1(new Vector3D(transformation_up * new Vector4D(current_camera.World_Direction)), new Vector3D(transformation_up * new Vector4D(current_camera.World_Direction_Up)));
                     break;
                 case Keys.J:
                     // Rotate left
@@ -189,7 +193,7 @@ namespace _3D_Graphics
                 case Keys.K:
                     // Rotate down
                     Matrix4x4 transformation_down = Transform.Quaternion_Rotation_Axis_Matrix(current_camera.World_Direction_Right, -camera_tilt * update_time);
-                    current_camera.Set_Camera_Direction_3(new Vector3D(transformation_down * new Vector4D(current_camera.World_Direction_Right)), new Vector3D(transformation_down * new Vector4D(current_camera.World_Direction)));
+                    current_camera.Set_Camera_Direction_1(new Vector3D(transformation_down * new Vector4D(current_camera.World_Direction)), new Vector3D(transformation_down * new Vector4D(current_camera.World_Direction_Up)));
                     break;
                 case Keys.U:
                     // Roll left

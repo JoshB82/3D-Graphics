@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Diagnostics;
 namespace _3D_Graphics
 {
     /// <summary>
@@ -45,7 +45,12 @@ namespace _3D_Graphics
 
         #region Vector Operations (Common)
         // SMALLEST ANGLE
-        public double Angle(Vector3D v) => Math.Acos((this * v) / (this.Magnitude() * v.Magnitude()));
+        public double Angle(Vector3D v)
+        {
+            double quotient = (this * v) / (this.Magnitude() * v.Magnitude());
+            if (quotient < -1) quotient = -1; if (quotient > 1) quotient = 1;
+            return Math.Acos(quotient);
+        }
 
         public Vector3D Cross_Product(Vector3D v) => new Vector3D(this.Y * v.Z - this.Z * v.Y, this.Z * v.X - this.X * v.Z, this.X * v.Y - this.Y * v.X);
 
