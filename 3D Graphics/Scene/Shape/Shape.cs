@@ -3,6 +3,9 @@
     public class Shape : Scene_Object
     {
         #region ID
+        /// <summary>
+        /// Unique identification number for this shape.
+        /// </summary>
         public int ID { get; private set; }
         private static int next_id = -1;
         protected static int Get_Next_ID()

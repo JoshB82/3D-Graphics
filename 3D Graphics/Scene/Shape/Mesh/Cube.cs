@@ -8,10 +8,10 @@ namespace _3D_Graphics
     /// </summary>
     public sealed class Cube : Mesh
     {
-        public double side_length;
+        private double side_length;
         public double Side_Length
         {
-            get { return side_length; }
+            get => side_length;
             set
             {
                 side_length = value;

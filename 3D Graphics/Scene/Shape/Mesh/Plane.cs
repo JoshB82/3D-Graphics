@@ -8,10 +8,10 @@ namespace _3D_Graphics
     /// </summary>
     public sealed class Plane : Mesh
     {
-        public double length, width;
+        private double length, width;
         public double Length
         {
-            get { return length; }
+            get => length;
             set
             {
                 length = value;
@@ -20,7 +20,7 @@ namespace _3D_Graphics
         }
         public double Width
         {
-            get { return width; }
+            get => width;
             set
             {
                 width = value;

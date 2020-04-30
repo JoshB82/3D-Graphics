@@ -83,12 +83,12 @@ namespace _3D_Graphics
             Shape test_plane_shape = new Shape(test_plane);
             scene.Add(test_plane_shape);
 
-            // Create lights
-            //lights.Add(new Distant_Light(new Vector3D(300, 400, 500), cube_mesh, Color.Red, 1));
-            //scene.Add(lights[0]);
-
             // Add object from file
-            scene.Add("C:\\Users\\jbrya\\source\\repos\\3D Graphics\\3D Graphics\\Models\\teapot.obj");
+            Custom teapot_mesh = new Custom(Vector3D.Zero, Vector3D.Unit_X, Vector3D.Unit_Y, "C:\\Users\\jbrya\\source\\repos\\3D Graphics\\3D Graphics\\Models\\teapot.obj");
+            Shape teapot = new Shape(teapot_mesh);
+            scene.Add(teapot);
+            teapot_mesh.Scale(20);
+            teapot_mesh.Draw_Outline = true;
 
             Thread graphics_thread = new Thread(Game_Loop);
             graphics_thread.Start();

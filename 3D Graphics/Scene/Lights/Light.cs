@@ -5,6 +5,9 @@ namespace _3D_Graphics
     public abstract class Light : Scene_Object
     {
         #region ID
+        /// <summary>
+        /// Unique identification number for this light.
+        /// </summary>
         public int ID { get; private set; }
         private static int next_id = -1;
         protected static int Get_Next_ID()
@@ -22,10 +25,11 @@ namespace _3D_Graphics
         public Vector3D Model_Direction_Up { get; } = Vector3D.Unit_Y;
         public Vector3D Model_Direction_Right { get; } = Vector3D.Unit_Z;
 
+        // See other files on using methods
         private Vector3D world_direction;
         public Vector3D World_Direction
         {
-            get { return world_direction; }
+            get => world_direction;
             set { world_direction = value.Normalise(); }
         }
         public Vector3D World_Direction_Up { get; set; }

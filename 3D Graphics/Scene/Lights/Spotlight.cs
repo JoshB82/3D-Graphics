@@ -9,7 +9,7 @@ namespace _3D_Graphics
         private double angle, radius;
         public double Angle
         {
-            get { return angle; }
+            get => return angle;
             set
             {
                 angle = value;
@@ -18,7 +18,7 @@ namespace _3D_Graphics
         }
         public double Radius
         {
-            get { return radius; }
+            get => radius;
             set
             {
                 angle = Math.Atan2(value, Distance) * 2;

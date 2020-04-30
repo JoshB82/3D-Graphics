@@ -8,10 +8,10 @@ namespace _3D_Graphics
     /// </summary>
     public sealed class Cuboid : Mesh
     {
-        public double length, width, height;
+        private double length, width, height;
         public double Length
         {
-            get { return length; }
+            get => length;
             set
             {
                 length = value;
@@ -20,7 +20,7 @@ namespace _3D_Graphics
         }
         public double Width
         {
-            get { return width; }
+            get => width;
             set
             {
                 width = value;
@@ -29,7 +29,7 @@ namespace _3D_Graphics
         }
         public double Height
         {
-            get { return height; }
+            get => height;
             set
             {
                 height = value;

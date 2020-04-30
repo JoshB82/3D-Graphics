@@ -13,7 +13,7 @@ namespace _3D_Graphics
         private Vector4D[] model_vertices;
         public Vector4D[] Model_Vertices
         {
-            get { return model_vertices; }
+            get => model_vertices;
             protected set
             {
                 model_vertices = value;
