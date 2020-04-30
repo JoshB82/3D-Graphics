@@ -70,14 +70,11 @@ namespace _3D_Graphics
         /// <param name="canvas_box">The Picture box where the scene will be rendered.</param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        /// <param name="render_camera"></param>
-        public Scene(PictureBox canvas_box, int width, int height, Camera render_camera)
+        public Scene(PictureBox canvas_box, int width, int height)
         {
             Canvas_box = canvas_box;
             Width = width;
             Height = height;
-            Render_Camera = render_camera;
-            Camera_List.Add(render_camera);
 
             Background_colour = Color.White;
             Canvas = new Bitmap(width, height);

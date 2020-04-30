@@ -4,6 +4,16 @@ namespace _3D_Graphics
 {
     public abstract class Light : Scene_Object
     {
+        #region ID
+        public int ID { get; private set; }
+        private static int next_id = -1;
+        protected static int Get_Next_ID()
+        {
+            next_id++;
+            return next_id;
+        }
+        #endregion
+
         public Vector3D Model_Origin { get; } = Vector3D.Zero;
         public Vector4D World_Origin { get; set; }
         public Vector4D Camera_Origin { get; protected set; } //?

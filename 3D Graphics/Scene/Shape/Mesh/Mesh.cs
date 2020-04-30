@@ -75,7 +75,7 @@ namespace _3D_Graphics
         private Color spot_colour, edge_colour, face_colour;
         public Color Spot_Colour
         {
-            get { return spot_colour; }
+            get => spot_colour;
             set
             {
                 spot_colour = value;
@@ -85,7 +85,7 @@ namespace _3D_Graphics
         }
         public Color Edge_Colour
         {
-            get { return edge_colour; }
+            get => edge_colour;
             set
             {
                 edge_colour = value;
@@ -95,7 +95,7 @@ namespace _3D_Graphics
         }
         public Color Face_Colour
         {
-            get { return face_colour; }
+            get => face_colour;
             set
             {
                 face_colour = value;

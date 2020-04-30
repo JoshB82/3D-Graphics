@@ -29,17 +29,21 @@ namespace _3D_Graphics
             // Create form
             InitializeComponent();
 
+            // Create scene
+            scene = new Scene(Canvas_Box, Canvas_Box.Width, Canvas_Box.Height);
+
             // Create origin
             World_Point origin_mesh = new World_Point(Vector3D.Zero);
             Shape origin = new Shape(origin_mesh);
-
-            // Create default camera
-            Perspective_Camera default_camera = new Perspective_Camera(new Vector3D(0, 0, 100), origin_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
-
-            // Create scene
-            scene = new Scene(Canvas_Box, Canvas_Box.Width, Canvas_Box.Height, default_camera);
-
             scene.Add(origin);
+
+            // Create cameras
+            Perspective_Camera default_camera = new Perspective_Camera(new Vector3D(0, 0, 100), origin_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
+            scene.Render_Camera = default_camera;
+            Perspective_Camera alternate_camera = new Perspective_Camera(new Vector3D(0, 0, -10), origin_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 20) { Draw_Entire_View = false };
+            scene.Add(alternate_camera);
+
+
 
             // Create textures
             Bitmap brick = new Bitmap(Properties.Resources.brick);
@@ -78,10 +82,6 @@ namespace _3D_Graphics
             Plane test_plane = new Plane(Vector3D.Zero, Vector3D.Unit_X, Vector3D.Unit_Y, 50, 50, smiley);
             Shape test_plane_shape = new Shape(test_plane);
             scene.Add(test_plane_shape);
-
-            Perspective_Camera alternate_camera = new Perspective_Camera(new Vector3D(0, 0, -10), test_plane, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 20) { Draw_Entire_View = false };
-            //scene.Render_Camera = camera_1;
-            scene.Add(alternate_camera);
 
             // Create lights
             //lights.Add(new Distant_Light(new Vector3D(300, 400, 500), cube_mesh, Color.Red, 1));

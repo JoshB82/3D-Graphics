@@ -5,6 +5,16 @@ namespace _3D_Graphics
 {
     public abstract partial class Camera : Scene_Object
     {
+        #region ID
+        public int ID { get; private set; }
+        private static int next_id = -1;
+        protected static int Get_Next_ID()
+        {
+            next_id++;
+            return next_id;
+        }
+        #endregion
+
         #region Origins
         public Vector4D Model_Origin { get; } = Vector4D.Zero;
         public Vector4D World_Origin { get; set; }
@@ -64,6 +74,8 @@ namespace _3D_Graphics
 
         public Camera(Vector3D origin, Vector3D direction, Vector3D direction_up)
         {
+            ID = Get_Next_ID();
+
             World_Origin = new Vector4D(origin);
             Set_Camera_Direction_1(direction, direction_up);
         }

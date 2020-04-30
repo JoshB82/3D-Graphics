@@ -7,116 +7,16 @@ namespace _3D_Graphics
     {
         private static int Round_To_Int(double x) => (int)Math.Round(x, MidpointRounding.AwayFromZero);
 
-        private void Line(int x1, int y1, double z1, int x2, int y2, double z2, Color colour)
+        /// <summary>
+        /// Swaps the values of two variables.
+        /// </summary>
+        /// <param name="x1">First variable to be swapped.</param>
+        /// <param name="x2">Second variable to be swapped.</param>
+        private static void Swap<T>(ref T x1, ref T x2)
         {
-            if (x1 == x2)
-            {
-                Vertical_Line(x1, y1, z1, x2, y2, z2, colour);
-            }
-            else
-            {
-                if (y1 == y2)
-                {
-                    Horizontal_Line(x1, y1, z1, x2, y2, z2, colour);
-                }
-                else
-                {
-                    double z_increase_x = (z1 - z2) / (x1 - x2), z_increase_y = (z1 - z2) / (y1 - y2);
-
-                    int delta_x = x2 - x1;
-                    int delta_y = y2 - y1;
-
-                    int increment_x = Math.Sign(delta_x);
-                    int increment_y = Math.Sign(delta_y);
-
-                    delta_x = Math.Abs(delta_x);
-                    delta_y = Math.Abs(delta_y);
-
-                    int x = x1, y = y1, R = 0, D = Math.Max(delta_x, delta_y);
-                    double z_value = z1;
-
-                    if (delta_x > delta_y)
-                    {
-                        for (int i = 0; i <= D; i++)
-                        {
-                            Check_Against_Z_Buffer(x, y, z_value, colour);
-                            x += increment_x;
-                            z_value += z_increase_x * increment_x;
-                            R += 2 * delta_y;
-                            if (R >= delta_x)
-                            {
-                                R -= 2 * delta_x;
-                                y += increment_y;
-                                z_value += z_increase_y * increment_y;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i <= D; i++)
-                        {
-                            Check_Against_Z_Buffer(x, y, z_value, colour);
-                            y += increment_y;
-                            z_value += z_increase_y * increment_y;
-                            R += 2 * delta_x;
-                            if (R >= delta_y)
-                            {
-                                R -= 2 * delta_y;
-                                x += increment_x;
-                                z_value += z_increase_x * increment_x;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void Horizontal_Line(int x1, int y1, double z1, int x2, int y2, double z2, Color colour)
-        {
-            double z_value, z_increase_x = (z1 - z2) / (x1 - x2);
-            int min_x, max_x;
-            if (x1 < x2)
-            {
-                min_x = x1;
-                max_x = x2;
-                z_value = z1;
-            }
-            else
-            {
-                min_x = x2;
-                max_x = x1;
-                z_value = z2;
-            }
-
-            for (int x = min_x; x <= max_x; x++)
-            {
-                Check_Against_Z_Buffer(x, y1, z_value, colour);
-                z_value += z_increase_x;
-            }
-        }
-
-        private void Vertical_Line(int x1, int y1, double z1, int x2, int y2, double z2, Color colour)
-        {
-            double z_value, z_increase_y = (z1 - z2) / (y1 - y2);
-            int min_y, max_y;
-            if (y1 < y2)
-            {
-                min_y = y1;
-                max_y = y2;
-                z_value = z1;
-            }
-            else
-            {
-                min_y = y2;
-                max_y = y1;
-                z_value = z2;
-            }
-
-            for (int y = min_y; y <= max_y; y++)
-            {
-                Check_Against_Z_Buffer(x1, y, z_value, colour);
-                z_value += z_increase_y;
-            }
+            T temp = x1;
+            x1 = x2;
+            x2 = temp;
         }
 
         private void Textured_Triangle(int x1, int y1, double z1, int x2, int y2, double z2, int x3, int y3, double z3, int tx1, int ty1, int tx2, int ty2, int tx3, int ty3, Bitmap texture)
@@ -191,13 +91,13 @@ namespace _3D_Graphics
 
             if (x2 < x4)
             {
-                Line_2(x2, y2, x1, y1, out start_x_values);
-                Line_2(x4, y4, x1, y1, out final_x_values);
+                start_x_values = Line_2(x2, y2, x1, y1);
+                final_x_values = Line_2(x4, y4, x1, y1);
             }
             else
             {
-                Line_2(x4, y4, x1, y1, out start_x_values);
-                Line_2(x2, y2, x1, y1, out final_x_values);
+                start_x_values = Line_2(x4, y4, x1, y1);
+                final_x_values = Line_2(x2, y2, x1, y1);
             }
 
             int start_x_value, final_x_value;
@@ -251,13 +151,13 @@ namespace _3D_Graphics
 
             if (x2 < x4)
             {
-                Line_2(x3, y3, x2, y2, out start_x_values);
-                Line_2(x3, y3, x4, y4, out final_x_values);
+                start_x_values = Line_2(x3, y3, x2, y2);
+                final_x_values = Line_2(x3, y3, x4, y4);
             }
             else
             {
-                Line_2(x3, y3, x4, y4, out start_x_values);
-                Line_2(x3, y3, x2, y2, out final_x_values);
+                start_x_values = Line_2(x3, y3, x4, y4);
+                final_x_values = Line_2(x3, y3, x2, y2);
             }
 
             int start_x_value, final_x_value;
@@ -352,13 +252,13 @@ namespace _3D_Graphics
 
             if (x1 < x2)
             {
-                Line_2(x1, y1, x3, y3, out start_x_values);
-                Line_2(x2, y2, x3, y3, out final_x_values);
+                start_x_values = Line_2(x1, y1, x3, y3);
+                final_x_values = Line_2(x2, y2, x3, y3);
             }
             else
             {
-                Line_2(x2, y2, x3, y3, out start_x_values);
-                Line_2(x1, y1, x3, y3, out final_x_values);
+                start_x_values = Line_2(x2, y2, x3, y3);
+                final_x_values = Line_2(x1, y1, x3, y3);
             }
 
             int start_x_value, final_x_value, prev_x = 0;
@@ -387,13 +287,13 @@ namespace _3D_Graphics
 
             if (x1 < x2)
             {
-                Line_2(x3, y3, x1, y1, out start_x_values);
-                Line_2(x3, y3, x2, y2, out final_x_values);
+                start_x_values = Line_2(x3, y3, x1, y1);
+                final_x_values = Line_2(x3, y3, x2, y2);
             }
             else
             {
-                Line_2(x3, y3, x2, y2, out start_x_values);
-                Line_2(x3, y3, x1, y1, out final_x_values);
+                start_x_values = Line_2(x3, y3, x2, y2);
+                final_x_values = Line_2(x3, y3, x1, y1);
             }
 
             int start_x_value, final_x_value, prev_x = 0;
@@ -413,77 +313,6 @@ namespace _3D_Graphics
                 prev_x = start_x_value;
                 if (y != y1) z_value += z_increase_y;
             }
-        }
-
-        private void Line_2(int x1, int y1, int x2, int y2, out int[] x_values)
-        {
-            int delta_x = x2 - x1;
-            int delta_y = y2 - y1;
-
-            int increment_x = Math.Sign(delta_x);
-            int increment_y = Math.Sign(delta_y);
-
-            delta_x = Math.Abs(delta_x);
-            delta_y = Math.Abs(delta_y);
-
-            int D = Math.Max(delta_x, delta_y);
-
-            x_values = new int[delta_y + 1];
-            x_values[0] = x1;
-
-            int x = x1;
-            int y = y1;
-            int R = 0;
-            int y_count = 0;
-
-            if (delta_x > delta_y)
-            {
-                for (int i = 0; i <= D; i++)
-                {
-                    x += increment_x;
-                    R += 2 * delta_y;
-                    if (R >= delta_x)
-                    {
-                        R -= 2 * delta_x;
-                        y += increment_y;
-                        if (i != D)
-                        {
-                            y_count++;
-                            x_values[y_count] = x;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i <= D; i++)
-                {
-                    y += increment_y;
-                    R += 2 * delta_x;
-                    if (R >= delta_y)
-                    {
-                        R -= 2 * delta_y;
-                        x += increment_x;
-                    }
-                    if (i != D)
-                    {
-                        y_count++;
-                        x_values[y_count] = x;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Swaps the values of two variables.
-        /// </summary>
-        /// <param name="x1">First variable to be swapped.</param>
-        /// <param name="x2">Second variable to be swapped.</param>
-        private static void Swap<T>(ref T x1, ref T x2)
-        {
-            T temp = x1;
-            x1 = x2;
-            x2 = temp;
         }
 
         private static void Sort_By_Y(ref int x1, ref int y1, ref double z1, ref int x2, ref int y2, ref double z2, ref int x3, ref int y3, ref double z3)
