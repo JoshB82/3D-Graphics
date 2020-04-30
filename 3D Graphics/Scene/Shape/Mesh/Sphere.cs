@@ -2,7 +2,7 @@
 
 namespace _3D_Graphics
 {
-    public class Sphere : Mesh
+    public sealed class Sphere : Mesh
     {
         public Sphere(Vector3D origin, Vector3D direction, Vector3D direction_up, double radius, int resolution)
         {

@@ -13,9 +13,9 @@ namespace _3D_Graphics
             World_Direction_Up = new_world_direction_up;
             World_Direction_Right = new_world_direction.Cross_Product(new_world_direction_up);
             Debug.WriteLine("Camera direction changed to:\n" +
-                $"Forward: ({World_Direction})\n" +
-                $"Up: ({World_Direction_Up})\n" +
-                $"Right: ({World_Direction_Right})"
+                $"Forward: {World_Direction}\n" +
+                $"Up: {World_Direction_Up}\n" +
+                $"Right: {World_Direction_Right}"
             );
         }
         public void Set_Camera_Direction_2(Vector3D new_world_direction_up, Vector3D new_world_direction_right)
@@ -26,9 +26,9 @@ namespace _3D_Graphics
             World_Direction_Up = new_world_direction_up;
             World_Direction_Right = new_world_direction_right;
             Debug.WriteLine("Camera direction changed to:\n" +
-                $"Forward: ({World_Direction})\n" +
-                $"Up: ({World_Direction_Up})\n" +
-                $"Right: ({World_Direction_Right})"
+                $"Forward: {World_Direction}\n" +
+                $"Up: {World_Direction_Up}\n" +
+                $"Right: {World_Direction_Right}"
             );
         }
         public void Set_Camera_Direction_3(Vector3D new_world_direction_right, Vector3D new_world_direction)
@@ -39,9 +39,9 @@ namespace _3D_Graphics
             World_Direction_Up = new_world_direction_right.Cross_Product(new_world_direction);
             World_Direction_Right = new_world_direction_right;
             Debug.WriteLine("Camera direction changed to:\n" +
-                $"Forward: ({World_Direction})\n" +
-                $"Up: ({World_Direction_Up})\n" +
-                $"Right: ({World_Direction_Right})"
+                $"Forward: {World_Direction}\n" +
+                $"Up: {World_Direction_Up}\n" +
+                $"Right: {World_Direction_Right}"
             );
         }
         #endregion

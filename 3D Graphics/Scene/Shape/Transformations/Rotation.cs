@@ -115,12 +115,11 @@ namespace _3D_Graphics
             return (angle == 0) ? new Quaternion(1, 0, 0, 0) : Quaternion_Rotation(axis, angle);
         }
 
-        public static Matrix4x4 Quaternion_to_Matrix(Quaternion q)
-        {
+        public static Matrix4x4 Quaternion_to_Matrix(Quaternion q) =>
             // RIGHT HANDED ROTATION
             // (ANTI CLOCKWISE WHEN LOOKING AT ORIGIN FROM ARROW TIP TO BEGINNING)
 
-            Matrix4x4 test = new Matrix4x4(
+            new Matrix4x4(
                 1 - 2 * (Math.Pow(q.Q3, 2) + Math.Pow(q.Q4, 2)),
                 2 * (q.Q2 * q.Q3 - q.Q4 * q.Q1),
                 2 * (q.Q2 * q.Q4 + q.Q3 * q.Q1),
@@ -138,8 +137,6 @@ namespace _3D_Graphics
                 0,
                 1
             );
-            return test;
-        }
 
         public static Matrix4x4 Quaternion_Rotation_Matrix(Vector3D v1, Vector3D v2, Vector3D? rotation_axis = null) => Quaternion_to_Matrix(Quaternion_Rotation_Between_Vectors(v1, v2, rotation_axis));
         public static Matrix4x4 Quaternion_Rotation_Axis_Matrix(Vector3D axis, double angle) => Transform.Quaternion_to_Matrix(Transform.Quaternion_Rotation(axis, angle));

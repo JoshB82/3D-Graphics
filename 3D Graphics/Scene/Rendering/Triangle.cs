@@ -7,24 +7,6 @@ namespace _3D_Graphics
     {
         private static int Round_To_Int(double x) => (int)Math.Round(x, MidpointRounding.AwayFromZero);
 
-        private void Check_Against_Z_Buffer(int x, int y, double z, Color new_colour)
-        {
-            if (z <= z_buffer[x][y])
-            {
-                z_buffer[x][y] = z;
-                colour_buffer[x][y] = new_colour;
-            }
-        }
-
-        private void Check_Against_Z_Buffer_Texture(int x, int y, int tx, int ty, double z, Bitmap texture)
-        {
-            if (z <= z_buffer[x][y])
-            {
-                z_buffer[x][y] = z;
-                colour_buffer[x][y] = texture.GetPixel(tx, ty * -1 + texture.Height - 1);
-            }
-        }
-
         private void Line(int x1, int y1, double z1, int x2, int y2, double z2, Color colour)
         {
             if (x1 == x2)

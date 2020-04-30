@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-using System.Diagnostics;
+
 namespace _3D_Graphics
 {
     public partial class MainForm : Form
     {
         private const double grav_acc = -9.81;
-        private const double camera_pan = 0.0005;
+        private const double camera_pan = 0.0001;
         private const double camera_tilt = 0.000001;
 
         private const int max_frames_per_second = 60;
@@ -17,7 +17,6 @@ namespace _3D_Graphics
 
         private Scene scene;
 
-        private Camera current_camera;
         private int camera_selected = 0;
 
         private List<Light> lights = new List<Light>();
@@ -30,13 +29,21 @@ namespace _3D_Graphics
             // Create form
             InitializeComponent();
 
+            // Create origin
+            World_Point origin_mesh = new World_Point(Vector3D.Zero);
+            Shape origin = new Shape(origin_mesh);
+
+            // Create default camera
+            Perspective_Camera default_camera = new Perspective_Camera(new Vector3D(0, 0, 100), origin_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
+
             // Create scene
-            scene = new Scene(Canvas_Box.Width, Canvas_Box.Height);
+            scene = new Scene(Canvas_Box, Canvas_Box.Width, Canvas_Box.Height, default_camera);
+
+            scene.Add(origin);
 
             // Create textures
-            string texture_folder = "C:\\Users\\jbrya\\source\\repos\\3D Graphics\\3D Graphics\\Textures\\";
-            Bitmap brick = new Bitmap(texture_folder + "brick.bmp");
-            Bitmap smiley = new Bitmap(texture_folder + "smiley.jpg");
+            Bitmap brick = new Bitmap(Properties.Resources.brick);
+            Bitmap smiley = new Bitmap(Properties.Resources.smiley);
 
             // Create default meshes
             /*
@@ -72,19 +79,16 @@ namespace _3D_Graphics
             Shape test_plane_shape = new Shape(test_plane);
             scene.Add(test_plane_shape);
 
-            // Create cameras
-            Perspective_Camera camera_1 = new Perspective_Camera(new Vector3D(0, 0, 100), test_plane, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
-            Perspective_Camera camera_2 = new Perspective_Camera(new Vector3D(0, 0, -100), test_plane, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
-            current_camera = camera_1;
-            scene.Add(camera_1);
-            scene.Add(camera_2);
+            Perspective_Camera alternate_camera = new Perspective_Camera(new Vector3D(0, 0, -10), test_plane, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 20) { Draw_Entire_View = false };
+            //scene.Render_Camera = camera_1;
+            scene.Add(alternate_camera);
 
             // Create lights
             //lights.Add(new Distant_Light(new Vector3D(300, 400, 500), cube_mesh, Color.Red, 1));
             //scene.Add(lights[0]);
 
             // Add object from file
-            //scene.Add_From_OBJ_File("C:\\Users\\jbrya\\source\\repos\\3D Racer\\3D Racer\\Models\\teapot.obj");
+            scene.Add("C:\\Users\\jbrya\\source\\repos\\3D Graphics\\3D Graphics\\Models\\teapot.obj");
 
             Thread graphics_thread = new Thread(Game_Loop);
             graphics_thread.Start();
@@ -117,7 +121,7 @@ namespace _3D_Graphics
                 if (frame_delta_time >= frame_optimal_time)
                 {
                     // Update objects????vv
-                    scene.Render(Canvas_Box, current_camera);
+                    scene.Render();
                     no_frames++;
                 }
 
@@ -131,7 +135,7 @@ namespace _3D_Graphics
                 if (now_time - timer >= 1000)
                 {
                     // ??
-                    this.Invoke((MethodInvoker)delegate { this.Text = $"3D Racer - FPS: {no_frames}, UPS: {no_updates}"; });
+                    this.Invoke((MethodInvoker)delegate { this.Text = $"3D Graphics - FPS: {no_frames}, UPS: {no_updates}"; });
                     no_frames = 0; no_updates = 0;
                     timer += 1000;
                 }
@@ -153,57 +157,57 @@ namespace _3D_Graphics
             {
                 case Keys.W:
                     // Pan forward
-                    current_camera.Translate(current_camera.World_Direction * camera_pan * update_time);
+                    scene.Render_Camera.Translate(scene.Render_Camera.World_Direction * camera_pan * update_time);
                     break;
                 case Keys.A:
                     // Pan left
-                    current_camera.Translate(current_camera.World_Direction_Right * -camera_pan * update_time);
+                    scene.Render_Camera.Translate(scene.Render_Camera.World_Direction_Right * -camera_pan * update_time);
                     break;
                 case Keys.D:
                     // Pan right
-                    current_camera.Translate(current_camera.World_Direction_Right * camera_pan * update_time);
+                    scene.Render_Camera.Translate(scene.Render_Camera.World_Direction_Right * camera_pan * update_time);
                     break;
                 case Keys.S:
                     // Pan back
-                    current_camera.Translate(current_camera.World_Direction * -camera_pan * update_time);
+                    scene.Render_Camera.Translate(scene.Render_Camera.World_Direction * -camera_pan * update_time);
                     break;
                 case Keys.Q:
                     // Pan up
-                    current_camera.Translate(current_camera.World_Direction_Up * camera_pan * update_time);
+                    scene.Render_Camera.Translate(scene.Render_Camera.World_Direction_Up * camera_pan * update_time);
                     break;
                 case Keys.E:
                     // Pan down
-                    current_camera.Translate(current_camera.World_Direction_Up * -camera_pan * update_time);
+                    scene.Render_Camera.Translate(scene.Render_Camera.World_Direction_Up * -camera_pan * update_time);
                     break;
                 case Keys.I:
                     // Rotate up
-                    Matrix4x4 transformation_up = Transform.Quaternion_Rotation_Axis_Matrix(current_camera.World_Direction_Right, camera_tilt * update_time);
-                    current_camera.Set_Camera_Direction_1(new Vector3D(transformation_up * new Vector4D(current_camera.World_Direction)), new Vector3D(transformation_up * new Vector4D(current_camera.World_Direction_Up)));
+                    Matrix4x4 transformation_up = Transform.Quaternion_Rotation_Axis_Matrix(scene.Render_Camera.World_Direction_Right, camera_tilt * update_time);
+                    scene.Render_Camera.Set_Camera_Direction_1(new Vector3D(transformation_up * new Vector4D(scene.Render_Camera.World_Direction)), new Vector3D(transformation_up * new Vector4D(scene.Render_Camera.World_Direction_Up)));
                     break;
                 case Keys.J:
                     // Rotate left
-                    Matrix4x4 transformation_left = Transform.Quaternion_Rotation_Axis_Matrix(current_camera.World_Direction_Up, camera_tilt * update_time);
-                    current_camera.Set_Camera_Direction_3(new Vector3D(transformation_left * new Vector4D(current_camera.World_Direction_Right)), new Vector3D(transformation_left * new Vector4D(current_camera.World_Direction)));
+                    Matrix4x4 transformation_left = Transform.Quaternion_Rotation_Axis_Matrix(scene.Render_Camera.World_Direction_Up, camera_tilt * update_time);
+                    scene.Render_Camera.Set_Camera_Direction_3(new Vector3D(transformation_left * new Vector4D(scene.Render_Camera.World_Direction_Right)), new Vector3D(transformation_left * new Vector4D(scene.Render_Camera.World_Direction)));
                     break;
                 case Keys.L:
                     // Rotate right
-                    Matrix4x4 transformation_right = Transform.Quaternion_Rotation_Axis_Matrix(current_camera.World_Direction_Up, -camera_tilt * update_time);
-                    current_camera.Set_Camera_Direction_3(new Vector3D(transformation_right * new Vector4D(current_camera.World_Direction_Right)), new Vector3D(transformation_right * new Vector4D(current_camera.World_Direction)));
+                    Matrix4x4 transformation_right = Transform.Quaternion_Rotation_Axis_Matrix(scene.Render_Camera.World_Direction_Up, -camera_tilt * update_time);
+                    scene.Render_Camera.Set_Camera_Direction_3(new Vector3D(transformation_right * new Vector4D(scene.Render_Camera.World_Direction_Right)), new Vector3D(transformation_right * new Vector4D(scene.Render_Camera.World_Direction)));
                     break;
                 case Keys.K:
                     // Rotate down
-                    Matrix4x4 transformation_down = Transform.Quaternion_Rotation_Axis_Matrix(current_camera.World_Direction_Right, -camera_tilt * update_time);
-                    current_camera.Set_Camera_Direction_1(new Vector3D(transformation_down * new Vector4D(current_camera.World_Direction)), new Vector3D(transformation_down * new Vector4D(current_camera.World_Direction_Up)));
+                    Matrix4x4 transformation_down = Transform.Quaternion_Rotation_Axis_Matrix(scene.Render_Camera.World_Direction_Right, -camera_tilt * update_time);
+                    scene.Render_Camera.Set_Camera_Direction_1(new Vector3D(transformation_down * new Vector4D(scene.Render_Camera.World_Direction)), new Vector3D(transformation_down * new Vector4D(scene.Render_Camera.World_Direction_Up)));
                     break;
                 case Keys.U:
                     // Roll left
-                    Matrix4x4 transformation_roll_left = Transform.Quaternion_Rotation_Axis_Matrix(current_camera.World_Direction, -camera_tilt * update_time);
-                    current_camera.Set_Camera_Direction_2(new Vector3D(transformation_roll_left * new Vector4D(current_camera.World_Direction_Up)), new Vector3D(transformation_roll_left * new Vector4D(current_camera.World_Direction_Right)));
+                    Matrix4x4 transformation_roll_left = Transform.Quaternion_Rotation_Axis_Matrix(scene.Render_Camera.World_Direction, -camera_tilt * update_time);
+                    scene.Render_Camera.Set_Camera_Direction_2(new Vector3D(transformation_roll_left * new Vector4D(scene.Render_Camera.World_Direction_Up)), new Vector3D(transformation_roll_left * new Vector4D(scene.Render_Camera.World_Direction_Right)));
                     break;
                 case Keys.O:
                     // Roll right
-                    Matrix4x4 transformation_roll_right = Transform.Quaternion_Rotation_Axis_Matrix(current_camera.World_Direction, camera_tilt * update_time);
-                    current_camera.Set_Camera_Direction_2(new Vector3D(transformation_roll_right * new Vector4D(current_camera.World_Direction_Up)), new Vector3D(transformation_roll_right * new Vector4D(current_camera.World_Direction_Right)));
+                    Matrix4x4 transformation_roll_right = Transform.Quaternion_Rotation_Axis_Matrix(scene.Render_Camera.World_Direction, camera_tilt * update_time);
+                    scene.Render_Camera.Set_Camera_Direction_2(new Vector3D(transformation_roll_right * new Vector4D(scene.Render_Camera.World_Direction_Up)), new Vector3D(transformation_roll_right * new Vector4D(scene.Render_Camera.World_Direction_Right)));
                     break;
             }
         }
@@ -212,15 +216,15 @@ namespace _3D_Graphics
         {
             camera_selected++;
             if (camera_selected > scene.Camera_List.Count - 1) camera_selected = 0;
-            current_camera = scene.Camera_List[camera_selected];
+            scene.Render_Camera = scene.Camera_List[camera_selected];
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            if (current_camera != null)
+            if (scene != null)
             {
-                current_camera.Width = Canvas_Box.Width / 10;
-                current_camera.Height = Canvas_Box.Height / 10;
+                scene.Render_Camera.Width = Canvas_Box.Width / 10;
+                scene.Render_Camera.Height = Canvas_Box.Height / 10;
                 scene.Width = Canvas_Box.Width;
                 scene.Height = Canvas_Box.Height;
             }

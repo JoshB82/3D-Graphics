@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Linq.Expressions;
 
 namespace _3D_Graphics
 {
@@ -21,8 +20,6 @@ namespace _3D_Graphics
             Diameter = 10;
             Visible = true;
         }
-
-        public Spot(Vector3D origin, Color? colour = null) : this(new Vector4D(origin), colour) { }
     }
 
     public struct Edge

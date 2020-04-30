@@ -5,9 +5,10 @@ namespace _3D_Graphics
 {
     public abstract partial class Camera : Scene_Object
     {
-        // Origins
+        #region Origins
         public Vector4D Model_Origin { get; } = Vector4D.Zero;
         public Vector4D World_Origin { get; set; }
+        #endregion
 
         #region Directions
         public Vector3D Model_Direction { get; } = Vector3D.Unit_Negative_Z;
@@ -26,10 +27,17 @@ namespace _3D_Graphics
         public Matrix4x4 World_to_screen { get; protected set; }
         #endregion
 
+        #region Parameters
         public abstract double Width { get; set; }
         public abstract double Height { get; set; }
         public abstract double Z_Near { get; set; }
         public abstract double Z_Far { get; set; }
+        #endregion
+
+        #region Appearance
+        public bool Draw_Entire_View { get; set; } = false;
+        public bool Draw_Near_View { get; set; } = false;
+        #endregion
 
         public void Apply_World_Matrix() => World_Origin = Model_to_world * Model_Origin;
 
@@ -37,7 +45,7 @@ namespace _3D_Graphics
         {
             Matrix4x4 direction_rotation = Transform.Quaternion_Rotation_Matrix(Model_Direction, World_Direction);
             Matrix4x4 direction_up_rotation = Transform.Quaternion_Rotation_Matrix(new Vector3D(direction_rotation * new Vector4D(Model_Direction_Up)), World_Direction_Up);
-            Matrix4x4 translation = Transform.Translate(new Vector3D(World_Origin));            
+            Matrix4x4 translation = Transform.Translate(new Vector3D(World_Origin));
 
             Model_to_world = translation * direction_up_rotation * direction_rotation;
         }
@@ -66,17 +74,17 @@ namespace _3D_Graphics
         private double width, height, z_near, z_far;
         public override double Width
         {
-            get { return width; }
+            get => width;
             set { width = value; Camera_to_screen.Data[0][0] = 2 / width; }
         }
         public override double Height
         {
-            get { return height; }
+            get => height;
             set { height = value; Camera_to_screen.Data[1][1] = 2 / height; }
         }
         public override double Z_Near
         {
-            get { return z_near; }
+            get => z_near;
             set
             {
                 z_near = value;
@@ -86,7 +94,7 @@ namespace _3D_Graphics
         }
         public override double Z_Far
         {
-            get { return z_far; }
+            get => z_far;
             set
             {
                 z_far = value;
@@ -148,17 +156,17 @@ namespace _3D_Graphics
         private double width, height, z_near, z_far;
         public override double Width
         {
-            get { return width; }
+            get => width;
             set { width = value; Camera_to_screen.Data[0][0] = 2 * z_near / width; }
         }
         public override double Height
         {
-            get { return height; }
+            get => height;
             set { height = value; Camera_to_screen.Data[1][1] = 2 * z_near / height; }
         }
         public override double Z_Near
         {
-            get { return z_near; }
+            get => z_near;
             set
             {
                 z_near = value;
@@ -168,7 +176,7 @@ namespace _3D_Graphics
         }
         public override double Z_Far
         {
-            get { return z_far; }
+            get => z_far;
             set
             {
                 z_far = value;
