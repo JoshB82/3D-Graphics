@@ -9,8 +9,8 @@ namespace _3D_Graphics
     public partial class MainForm : Form
     {
         private const double grav_acc = -9.81;
-        private const double camera_pan = 0.0001;
-        private const double camera_tilt = 0.000001;
+        private const double camera_pan = 0.0002;
+        private const double camera_tilt = 0.000002;
 
         private const int max_frames_per_second = 60;
         private const int max_updates_per_second = 60;
@@ -50,9 +50,11 @@ namespace _3D_Graphics
             Bitmap smiley = Properties.Resources.smiley;
 
             // Create default meshes
+            /*
             Cube cube_mesh = new Cube(new Vector3D(0, 0, 0), Vector3D.Unit_X, Vector3D.Unit_Y, 50) { Face_Colour = Color.Green };
             Shape cube = new Shape(cube_mesh) { Selected = true };
             scene.Add(cube);
+            */
 
             Cuboid cuboid_mesh = new Cuboid(new Vector3D(100, 0, 100), Vector3D.Unit_X, Vector3D.Unit_Y, 30, 40, 90, smiley);
             Shape cuboid = new Shape(cuboid_mesh);
@@ -77,19 +79,15 @@ namespace _3D_Graphics
             scene.Add(y_axis);
             scene.Add(z_axis);
 
-            /*
-            Plane test_plane = new Plane(Vector3D.Zero, Vector3D.Unit_X, Vector3D.Unit_Y, 50, 50, smiley);
+            Plane test_plane = new Plane(new Vector3D(100, 0, 0), Vector3D.Unit_X, Vector3D.Unit_Y, 50, 50, smiley);
             Shape test_plane_shape = new Shape(test_plane);
             scene.Add(test_plane_shape);
-            */
 
-            /*
             // Add object from file
             Custom teapot_mesh = new Custom(Vector3D.Zero, Vector3D.Unit_X, Vector3D.Unit_Y, "C:\\Users\\jbrya\\source\\repos\\3D Graphics\\3D Graphics\\Models\\teapot.obj");
             Shape teapot = new Shape(teapot_mesh);
             scene.Add(teapot);
             teapot_mesh.Scale(20);
-            */
 
             Thread graphics_thread = new Thread(Game_Loop);
             graphics_thread.Start();

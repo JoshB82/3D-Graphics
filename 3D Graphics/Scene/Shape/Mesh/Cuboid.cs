@@ -104,8 +104,8 @@ namespace _3D_Graphics
                 new Face(Model_Vertices[4], Model_Vertices[3], Model_Vertices[7]), // 7
                 new Face(Model_Vertices[7], Model_Vertices[3], Model_Vertices[6]), // 8
                 new Face(Model_Vertices[6], Model_Vertices[3], Model_Vertices[2]), // 9
-                new Face(Model_Vertices[4], Model_Vertices[5], Model_Vertices[0]), // 10
-                new Face(Model_Vertices[5], Model_Vertices[1], Model_Vertices[0]) // 11
+                new Face(Model_Vertices[4], Model_Vertices[5], Model_Vertices[1]), // 10
+                new Face(Model_Vertices[4], Model_Vertices[1], Model_Vertices[0]) // 11
             };
 
             Spot_Colour = Color.Blue;
@@ -140,8 +140,8 @@ namespace _3D_Graphics
             {
                 new Vector3D(0, 0, 1), // 0
                 new Vector3D(1, 0, 1), // 1
-                new Vector3D(0, 1, 1), // 2
-                new Vector3D(1, 1, 1) // 3
+                new Vector3D(1, 1, 1), // 2
+                new Vector3D(0, 1, 1) // 3
             };
 
             Spots = new Spot[8]
@@ -180,18 +180,18 @@ namespace _3D_Graphics
 
             Faces = new Face[12]
             {
-                new Face(Model_Vertices[0], Model_Vertices[1], Model_Vertices[2], Texture_Vertices[3], Texture_Vertices[2], Texture_Vertices[0], texture), // 0
-                new Face(Model_Vertices[0], Model_Vertices[2], Model_Vertices[3], Texture_Vertices[3], Texture_Vertices[0], Texture_Vertices[1], texture), // 1
-                new Face(Model_Vertices[1], Model_Vertices[6], Model_Vertices[2], Texture_Vertices[3], Texture_Vertices[0], Texture_Vertices[1], texture), // 2
-                new Face(Model_Vertices[1], Model_Vertices[5], Model_Vertices[6], Texture_Vertices[3], Texture_Vertices[2], Texture_Vertices[0], texture), // 3
-                new Face(Model_Vertices[4], Model_Vertices[7], Model_Vertices[5], Texture_Vertices[2], Texture_Vertices[0], Texture_Vertices[3], texture), // 4
-                new Face(Model_Vertices[5], Model_Vertices[7], Model_Vertices[6], Texture_Vertices[3], Texture_Vertices[0], Texture_Vertices[1], texture), // 5
-                new Face(Model_Vertices[0], Model_Vertices[3], Model_Vertices[4], Texture_Vertices[2], Texture_Vertices[0], Texture_Vertices[3], texture), // 6
-                new Face(Model_Vertices[4], Model_Vertices[3], Model_Vertices[7], Texture_Vertices[3], Texture_Vertices[0], Texture_Vertices[1], texture), // 7
-                new Face(Model_Vertices[7], Model_Vertices[3], Model_Vertices[6], Texture_Vertices[2], Texture_Vertices[0], Texture_Vertices[3], texture), // 8
-                new Face(Model_Vertices[6], Model_Vertices[3], Model_Vertices[2], Texture_Vertices[3], Texture_Vertices[0], Texture_Vertices[1], texture), // 9
-                new Face(Model_Vertices[4], Model_Vertices[5], Model_Vertices[0], Texture_Vertices[0], Texture_Vertices[1], Texture_Vertices[2], texture), // 10
-                new Face(Model_Vertices[5], Model_Vertices[1], Model_Vertices[0], Texture_Vertices[1], Texture_Vertices[3], Texture_Vertices[2], texture) // 11
+                new Face(Model_Vertices[0], Model_Vertices[1], Model_Vertices[2], Texture_Vertices[1], Texture_Vertices[0], Texture_Vertices[3], texture), // 0
+                new Face(Model_Vertices[0], Model_Vertices[2], Model_Vertices[3], Texture_Vertices[1], Texture_Vertices[3], Texture_Vertices[2], texture), // 1
+                new Face(Model_Vertices[1], Model_Vertices[6], Model_Vertices[2], Texture_Vertices[1], Texture_Vertices[3], Texture_Vertices[2], texture), // 2
+                new Face(Model_Vertices[1], Model_Vertices[5], Model_Vertices[6], Texture_Vertices[1], Texture_Vertices[0], Texture_Vertices[3], texture), // 3
+                new Face(Model_Vertices[4], Model_Vertices[7], Model_Vertices[5], Texture_Vertices[0], Texture_Vertices[3], Texture_Vertices[1], texture), // 4
+                new Face(Model_Vertices[5], Model_Vertices[7], Model_Vertices[6], Texture_Vertices[1], Texture_Vertices[3], Texture_Vertices[2], texture), // 5
+                new Face(Model_Vertices[0], Model_Vertices[3], Model_Vertices[4], Texture_Vertices[0], Texture_Vertices[3], Texture_Vertices[1], texture), // 6
+                new Face(Model_Vertices[4], Model_Vertices[3], Model_Vertices[7], Texture_Vertices[1], Texture_Vertices[3], Texture_Vertices[2], texture), // 7
+                new Face(Model_Vertices[7], Model_Vertices[3], Model_Vertices[6], Texture_Vertices[0], Texture_Vertices[3], Texture_Vertices[1], texture), // 8
+                new Face(Model_Vertices[6], Model_Vertices[3], Model_Vertices[2], Texture_Vertices[1], Texture_Vertices[3], Texture_Vertices[2], texture), // 9
+                new Face(Model_Vertices[4], Model_Vertices[5], Model_Vertices[1], Texture_Vertices[3], Texture_Vertices[2], Texture_Vertices[1], texture), // 10
+                new Face(Model_Vertices[4], Model_Vertices[1], Model_Vertices[0], Texture_Vertices[3], Texture_Vertices[1], Texture_Vertices[0], texture) // 11
             };
 
             Textures = new Bitmap[1]

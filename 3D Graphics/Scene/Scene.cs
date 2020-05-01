@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
 
 namespace _3D_Graphics

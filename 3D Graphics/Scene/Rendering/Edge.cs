@@ -5,7 +5,7 @@
         public void Draw_Edge(Edge edge)
         {
             // Clip the edge in world space
-            foreach (Clipping_Plane world_clipping_plane in Render_Camera.world_clipping_planes)
+            foreach (Clipping_Plane world_clipping_plane in Render_Camera.World_Clipping_Planes)
             {
                 if (!Clip_Edge(world_clipping_plane.Point, world_clipping_plane.Normal, ref edge)) return;
             }

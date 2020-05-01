@@ -68,7 +68,7 @@ namespace _3D_Graphics
 
             //OUT?
             // Clip face against each world clipping plane
-            foreach (Clipping_Plane world_clipping_plane in Render_Camera.world_clipping_planes)
+            foreach (Clipping_Plane world_clipping_plane in Render_Camera.World_Clipping_Planes)
             {
                 while (no_triangles > 0)
                 {
