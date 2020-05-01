@@ -12,6 +12,7 @@ namespace _3D_Graphics
             World_Direction = new_world_direction;
             World_Direction_Up = new_world_direction_up;
             World_Direction_Right = new_world_direction.Cross_Product(new_world_direction_up);
+            Calculate_Clipping_Planes();
             Debug.WriteLine("Camera direction changed to:\n" +
                 $"Forward: {World_Direction}\n" +
                 $"Up: {World_Direction_Up}\n" +
@@ -25,6 +26,7 @@ namespace _3D_Graphics
             World_Direction = new_world_direction_up.Cross_Product(new_world_direction_right);
             World_Direction_Up = new_world_direction_up;
             World_Direction_Right = new_world_direction_right;
+            Calculate_Clipping_Planes();
             Debug.WriteLine("Camera direction changed to:\n" +
                 $"Forward: {World_Direction}\n" +
                 $"Up: {World_Direction_Up}\n" +
@@ -38,6 +40,7 @@ namespace _3D_Graphics
             World_Direction = new_world_direction;
             World_Direction_Up = new_world_direction_right.Cross_Product(new_world_direction);
             World_Direction_Right = new_world_direction_right;
+            Calculate_Clipping_Planes();
             Debug.WriteLine("Camera direction changed to:\n" +
                 $"Forward: {World_Direction}\n" +
                 $"Up: {World_Direction_Up}\n" +
@@ -47,10 +50,26 @@ namespace _3D_Graphics
         #endregion
 
         #region Translations (Position)
-        public void Translate_X(double distance) => World_Origin += new Vector3D(distance, 0, 0);
-        public void Translate_Y(double distance) => World_Origin += new Vector3D(0, distance, 0);
-        public void Translate_Z(double distance) => World_Origin += new Vector3D(0, 0, distance);
-        public void Translate(Vector3D distance) => World_Origin += distance;
+        public void Translate_X(double distance)
+        {
+            World_Origin += new Vector3D(distance, 0, 0);
+            Calculate_Clipping_Planes();
+        }
+        public void Translate_Y(double distance)
+        {
+            World_Origin += new Vector3D(0, distance, 0);
+            Calculate_Clipping_Planes();
+        }
+        public void Translate_Z(double distance)
+        {
+            World_Origin += new Vector3D(0, 0, distance);
+            Calculate_Clipping_Planes();
+        }
+        public void Translate(Vector3D distance)
+        {
+            World_Origin += distance;
+            Calculate_Clipping_Planes();
+        }
         #endregion
     }
 }

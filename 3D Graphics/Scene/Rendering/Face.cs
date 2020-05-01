@@ -6,7 +6,7 @@ namespace _3D_Graphics
     {
         public void Draw_Face(Face face, string shape_type)
         {
-            Vector3D camera_to_face = new Vector3D(face.World_P1 - render_camera.World_Origin);
+            Vector3D camera_to_face = new Vector3D(face.World_P1 - Render_Camera.World_Origin);
             Vector3D normal = Vector3D.Normal_From_Plane(new Vector3D(face.World_P1), new Vector3D(face.World_P2), new Vector3D(face.World_P3));
 
             // Discard face if its not visible
@@ -68,7 +68,7 @@ namespace _3D_Graphics
 
             //OUT?
             // Clip face against each world clipping plane
-            foreach (Clipping_Plane world_clipping_plane in world_clipping_planes)
+            foreach (Clipping_Plane world_clipping_plane in Render_Camera.world_clipping_planes)
             {
                 while (no_triangles > 0)
                 {
@@ -90,9 +90,9 @@ namespace _3D_Graphics
             // Not entirely sure why can't use foreach loop :/
             for (int i = 0; i < projection_face_clip_array.Length; i++)
             {
-                projection_face_clip_array[i].World_P1 = render_camera.World_to_screen * projection_face_clip_array[i].World_P1;
-                projection_face_clip_array[i].World_P2 = render_camera.World_to_screen * projection_face_clip_array[i].World_P2;
-                projection_face_clip_array[i].World_P3 = render_camera.World_to_screen * projection_face_clip_array[i].World_P3;
+                projection_face_clip_array[i].World_P1 = Render_Camera.World_to_screen * projection_face_clip_array[i].World_P1;
+                projection_face_clip_array[i].World_P2 = Render_Camera.World_to_screen * projection_face_clip_array[i].World_P2;
+                projection_face_clip_array[i].World_P3 = Render_Camera.World_to_screen * projection_face_clip_array[i].World_P3;
 
                 projection_face_clip_array[i].World_P1 /= projection_face_clip_array[i].World_P1.W;
                 projection_face_clip_array[i].World_P2 /= projection_face_clip_array[i].World_P2.W;

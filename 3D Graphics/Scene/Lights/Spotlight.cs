@@ -9,7 +9,7 @@ namespace _3D_Graphics
         private double angle, radius;
         public double Angle
         {
-            get => return angle;
+            get => angle;
             set
             {
                 angle = value;

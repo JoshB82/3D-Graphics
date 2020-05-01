@@ -52,6 +52,8 @@ namespace _3D_Graphics
         public bool Draw_Near_View { get; set; } = false;
         #endregion
 
+        public Clipping_Plane[] world_clipping_planes;
+
         public void Apply_World_Matrix() => World_Origin = Model_to_world * Model_Origin;
 
         public void Calculate_Model_to_World_Matrix()
@@ -73,7 +75,7 @@ namespace _3D_Graphics
             World_to_screen = Camera_to_screen * World_to_camera;
         }
 
-        public abstract Clipping_Plane[] Calculate_Clipping_Planes();
+        public abstract void Calculate_Clipping_Planes();
 
         public Camera(Vector3D origin, Vector3D direction, Vector3D direction_up)
         {
@@ -125,6 +127,7 @@ namespace _3D_Graphics
             Height = height;
             Z_Near = z_near;
             Z_Far = z_far;
+            Calculate_Clipping_Planes();
 
             Debug.WriteLine($"Orthogonal camera created at {origin}");
         }
@@ -135,7 +138,8 @@ namespace _3D_Graphics
 
         public Orthogonal_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, string ignore, double fov_x, double fov_y, double z_near, double z_far) : this(origin, new Vector3D(pointed_at.World_Origin), direction_up, Math.Tan(fov_x / 2) * z_near * 2, Math.Tan(fov_y / 2) * z_near * 2, z_near, z_far) { }
 
-        public override Clipping_Plane[] Calculate_Clipping_Planes()
+        // needs changing
+        public override void Calculate_Clipping_Planes()
         {
             double ratio = Z_Far / Z_Near;
 
@@ -154,7 +158,7 @@ namespace _3D_Graphics
             Vector3D top_normal = Vector3D.Normal_From_Plane(near_top_left_point, near_top_right_point, far_top_left_point);
             Vector3D right_normal = Vector3D.Normal_From_Plane(near_top_right_point, near_bottom_right_point, far_bottom_right_point);
 
-            return new Clipping_Plane[]
+            world_clipping_planes = new Clipping_Plane[]
             {
                     new Clipping_Plane(near_point, World_Direction), // Near z
                     new Clipping_Plane(far_point, -World_Direction), // Far z
@@ -209,6 +213,7 @@ namespace _3D_Graphics
             Z_Far = z_far;
             Width = width;
             Height = height;
+            Calculate_Clipping_Planes();
 
             Debug.WriteLine($"Perspective camera created at {origin}");
         }
@@ -219,7 +224,7 @@ namespace _3D_Graphics
 
         public Perspective_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, string ignore, double fov_x, double fov_y, double z_near, double z_far) : this(origin, new Vector3D(pointed_at.World_Origin), direction_up, Math.Tan(fov_x / 2) * z_near * 2, Math.Tan(fov_y / 2) * z_near * 2, z_near, z_far) { }
 
-        public override Clipping_Plane[] Calculate_Clipping_Planes()
+        public override void Calculate_Clipping_Planes()
         {
             double ratio = Z_Far / Z_Near;
 
@@ -238,7 +243,7 @@ namespace _3D_Graphics
             Vector3D top_normal = Vector3D.Normal_From_Plane(near_top_left_point, near_top_right_point, far_top_left_point);
             Vector3D right_normal = Vector3D.Normal_From_Plane(near_top_right_point, near_bottom_right_point, far_bottom_right_point);
 
-            return new Clipping_Plane[]
+            world_clipping_planes = new Clipping_Plane[]
             {
                     new Clipping_Plane(near_point, World_Direction), // Near z
                     new Clipping_Plane(far_point, -World_Direction), // Far z

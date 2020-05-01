@@ -7,6 +7,7 @@
             double ratio = camera.Z_Far / camera.Z_Near;
             double semi_width = camera.Width / 2, semi_height = camera.Height / 2;
 
+            // semiwidth for camera class as well?
             Vector4D origin = camera.World_Origin;
             Vector4D near_top_left_point = origin + new Vector4D(-semi_width, semi_height, camera.Z_Near);
             Vector4D near_top_right_point = origin + new Vector4D(semi_width, semi_height, camera.Z_Near);

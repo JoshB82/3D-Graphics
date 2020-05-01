@@ -39,22 +39,20 @@ namespace _3D_Graphics
 
             // Create cameras
             Perspective_Camera default_camera = new Perspective_Camera(new Vector3D(0, 0, 100), origin_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
+            scene.Add(default_camera);
             scene.Render_Camera = default_camera;
+
             Perspective_Camera alternate_camera = new Perspective_Camera(new Vector3D(0, 0, -10), origin_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 20) { Draw_Entire_View = false };
             scene.Add(alternate_camera);
 
-
-
             // Create textures
-            Bitmap brick = new Bitmap(Properties.Resources.brick);
-            Bitmap smiley = new Bitmap(Properties.Resources.smiley);
+            Bitmap brick = Properties.Resources.brick;
+            Bitmap smiley = Properties.Resources.smiley;
 
             // Create default meshes
-            /*
             Cube cube_mesh = new Cube(new Vector3D(0, 0, 0), Vector3D.Unit_X, Vector3D.Unit_Y, 50) { Face_Colour = Color.Green };
             Shape cube = new Shape(cube_mesh) { Selected = true };
             scene.Add(cube);
-            */
 
             Cuboid cuboid_mesh = new Cuboid(new Vector3D(100, 0, 100), Vector3D.Unit_X, Vector3D.Unit_Y, 30, 40, 90, smiley);
             Shape cuboid = new Shape(cuboid_mesh);
@@ -79,16 +77,19 @@ namespace _3D_Graphics
             scene.Add(y_axis);
             scene.Add(z_axis);
 
+            /*
             Plane test_plane = new Plane(Vector3D.Zero, Vector3D.Unit_X, Vector3D.Unit_Y, 50, 50, smiley);
             Shape test_plane_shape = new Shape(test_plane);
             scene.Add(test_plane_shape);
+            */
 
+            /*
             // Add object from file
             Custom teapot_mesh = new Custom(Vector3D.Zero, Vector3D.Unit_X, Vector3D.Unit_Y, "C:\\Users\\jbrya\\source\\repos\\3D Graphics\\3D Graphics\\Models\\teapot.obj");
             Shape teapot = new Shape(teapot_mesh);
             scene.Add(teapot);
             teapot_mesh.Scale(20);
-            teapot_mesh.Draw_Outline = true;
+            */
 
             Thread graphics_thread = new Thread(Game_Loop);
             graphics_thread.Start();

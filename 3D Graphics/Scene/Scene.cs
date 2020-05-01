@@ -17,19 +17,9 @@ namespace _3D_Graphics
         public readonly List<Light> Light_List = new List<Light>();
         public readonly List<Shape> Shape_List = new List<Shape>();
 
-        private Clipping_Plane[] world_clipping_planes;
         private Clipping_Plane[] projection_clipping_planes;
 
-        private Camera render_camera;
-        public Camera Render_Camera
-        {
-            get => render_camera;
-            set
-            {
-                render_camera = value;
-                world_clipping_planes = render_camera.Calculate_Clipping_Planes();
-            }
-        }
+        public Camera Render_Camera { get; set; }
 
         public PictureBox Canvas_box { get; set; }
         public Bitmap Canvas { get; private set; }
@@ -144,7 +134,7 @@ namespace _3D_Graphics
         public void Render()
         {
             if (Canvas_box == null) throw new Exception("No picture box has been set yet!");
-            if (render_camera == null) throw new Exception("No camera has been set yet!");
+            if (Render_Camera == null) throw new Exception("No camera has been set yet!");
 
             // Only render if a change in scene has taken place.
             // if (!Change_scene) return;
@@ -159,9 +149,9 @@ namespace _3D_Graphics
                 for (int i = 0; i < Width; i++) for (int j = 0; j < Height; j++) colour_buffer[i][j] = Background_colour;
 
                 // Calculate camera matrices
-                render_camera.Calculate_Model_to_World_Matrix();
-                render_camera.Apply_World_Matrix();
-                render_camera.Calculate_World_to_Screen_Matrix();
+                Render_Camera.Calculate_Model_to_World_Matrix();
+                Render_Camera.Apply_World_Matrix();
+                Render_Camera.Calculate_World_to_Screen_Matrix();
                 
                 // Draw graphics
                 using (Graphics g = Graphics.FromImage(temp_canvas))

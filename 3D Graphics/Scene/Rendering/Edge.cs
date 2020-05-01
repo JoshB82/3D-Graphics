@@ -5,14 +5,14 @@
         public void Draw_Edge(Edge edge)
         {
             // Clip the edge in world space
-            foreach (Clipping_Plane world_clipping_plane in world_clipping_planes)
+            foreach (Clipping_Plane world_clipping_plane in Render_Camera.world_clipping_planes)
             {
                 if (!Clip_Edge(world_clipping_plane.Point, world_clipping_plane.Normal, ref edge)) return;
             }
 
             // Transform the edge into screen space and correct for perspective
-            edge.World_P1 = render_camera.World_to_screen * edge.World_P1;
-            edge.World_P2 = render_camera.World_to_screen * edge.World_P2;
+            edge.World_P1 = Render_Camera.World_to_screen * edge.World_P1;
+            edge.World_P2 = Render_Camera.World_to_screen * edge.World_P2;
 
             edge.World_P1 /= edge.World_P1.W;
             edge.World_P2 /= edge.World_P2.W;
