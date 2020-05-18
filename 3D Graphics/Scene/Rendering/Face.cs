@@ -4,7 +4,7 @@ namespace _3D_Graphics
 {
     public sealed partial class Scene
     {
-        public void Draw_Face(Face face, string shape_type)
+        public void Draw_Face(Face face, string shape_type, Camera camera)
         {
             Vector3D camera_to_face = new Vector3D(face.World_P1 - Render_Camera.World_Origin);
             Vector3D normal = Vector3D.Normal_From_Plane(new Vector3D(face.World_P1), new Vector3D(face.World_P2), new Vector3D(face.World_P3));
@@ -15,9 +15,9 @@ namespace _3D_Graphics
             // Draw outline if needed
             if (face.Draw_Outline)
             {
-                Draw_Edge(new Edge(face.World_P1, face.World_P2));
-                Draw_Edge(new Edge(face.World_P1, face.World_P3));
-                Draw_Edge(new Edge(face.World_P2, face.World_P3));
+                Draw_Edge(new Edge(face.World_P1, face.World_P2), camera);
+                Draw_Edge(new Edge(face.World_P1, face.World_P3), camera);
+                Draw_Edge(new Edge(face.World_P2, face.World_P3), camera);
             }
 
             /*
@@ -65,7 +65,7 @@ namespace _3D_Graphics
             Queue<Face> world_face_clip = new Queue<Face>();
             world_face_clip.Enqueue(face);
             int no_triangles = 1;
-
+            
             //OUT?
             // Clip face against each world clipping plane
             foreach (Clipping_Plane world_clipping_plane in Render_Camera.World_Clipping_Planes)
@@ -80,23 +80,26 @@ namespace _3D_Graphics
                 }
                 no_triangles = world_face_clip.Count;
             }
-
+            
             // Discard face if its been fully clipped
             if (no_triangles == 0) return;
 
             Face[] projection_face_clip_array = world_face_clip.ToArray();
 
             // Move remaining faces into projection space
-            // Not entirely sure why can't use foreach loop :/
+            // Not entirely sure why can't use foreach loop :/ (check how for loop works for 0,1,2,etc.)
             for (int i = 0; i < projection_face_clip_array.Length; i++)
             {
                 projection_face_clip_array[i].World_P1 = Render_Camera.World_to_screen * projection_face_clip_array[i].World_P1;
                 projection_face_clip_array[i].World_P2 = Render_Camera.World_to_screen * projection_face_clip_array[i].World_P2;
                 projection_face_clip_array[i].World_P3 = Render_Camera.World_to_screen * projection_face_clip_array[i].World_P3;
 
-                projection_face_clip_array[i].World_P1 /= projection_face_clip_array[i].World_P1.W;
-                projection_face_clip_array[i].World_P2 /= projection_face_clip_array[i].World_P2.W;
-                projection_face_clip_array[i].World_P3 /= projection_face_clip_array[i].World_P3.W;
+                if (camera.GetType().Name == "Perspective Camera")
+                {
+                    projection_face_clip_array[i].World_P1 /= projection_face_clip_array[i].World_P1.W;
+                    projection_face_clip_array[i].World_P2 /= projection_face_clip_array[i].World_P2.W;
+                    projection_face_clip_array[i].World_P3 /= projection_face_clip_array[i].World_P3.W;
+                }
 
                 /*
                 if (face.Texture != null)
@@ -126,9 +129,9 @@ namespace _3D_Graphics
 
             foreach (Face projection_clipped_face in projection_face_clip)
             {
-                Vector4D result_point_1 = Scale_to_screen(projection_clipped_face.World_P1);
-                Vector4D result_point_2 = Scale_to_screen(projection_clipped_face.World_P2);
-                Vector4D result_point_3 = Scale_to_screen(projection_clipped_face.World_P3);
+                Vector4D result_point_1 = screen_scale * projection_clipped_face.World_P1;
+                Vector4D result_point_2 = screen_scale * projection_clipped_face.World_P2;
+                Vector4D result_point_3 = screen_scale * projection_clipped_face.World_P3;
 
                 // More variable simplification
                 int result_point_1_x = Round_To_Int(result_point_1.X);
@@ -144,7 +147,7 @@ namespace _3D_Graphics
                 // Finally draw the triangle
                 if (face.Texture == null)
                 {
-                    Triangle(result_point_1_x, result_point_1_y, result_point_1_z, result_point_2_x, result_point_2_y, result_point_2_z, result_point_3_x, result_point_3_y, result_point_3_z, projection_clipped_face.Colour);
+                    //Triangle(result_point_1_x, result_point_1_y, result_point_1_z, result_point_2_x, result_point_2_y, result_point_2_z, result_point_3_x, result_point_3_y, result_point_3_z, projection_clipped_face.Colour);
                 }
                 else
                 {
@@ -160,7 +163,10 @@ namespace _3D_Graphics
                     int result_texture_point_3_x = Round_To_Int(face.T3.X * width);
                     int result_texture_point_3_y = Round_To_Int(face.T3.Y * height);
 
-                    Textured_Triangle(result_point_1_x, result_point_1_y, result_point_1_z, result_point_2_x, result_point_2_y, result_point_2_z, result_point_3_x, result_point_3_y, result_point_3_z, result_texture_point_1_x, result_texture_point_1_y, result_texture_point_2_x, result_texture_point_2_y, result_texture_point_3_x, result_texture_point_3_y, face.Texture);
+                    Textured_Triangle(face.Texture,
+                        result_point_1_x, result_point_1_y, result_point_1_z, result_texture_point_1_x, result_texture_point_1_y,
+                        result_point_2_x, result_point_2_y, result_point_2_z, result_texture_point_2_x, result_texture_point_2_y,
+                        result_point_3_x, result_point_3_y, result_point_3_z, result_texture_point_3_x, result_texture_point_3_y);
                 }
             }
             // RANGE TO DRAW X: [0,WIDTH-1] Y: [0,HEIGHT-1]

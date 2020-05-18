@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+
 namespace _3D_Graphics
 {
     /// <summary>
@@ -64,7 +64,7 @@ namespace _3D_Graphics
         #region Vector Operations (Geometry)
         public static Vector3D Line_Intersect_Plane(Vector3D line_start, Vector3D line_finish, Vector3D plane_point, Vector3D plane_normal, out double d)
         {
-            Vector3D line = (line_finish - line_start).Normalise();
+            Vector3D line = (line_finish - line_start);
             // d = new length / old length
             d = ((plane_point - line_start) * plane_normal) / (line * plane_normal);
             // Round in direction of normal!?
@@ -84,6 +84,8 @@ namespace _3D_Graphics
         public static Vector3D operator *(Vector3D v, double scalar) => new Vector3D(v.X * scalar, v.Y * scalar, v.Z * scalar);
         public static Vector3D operator /(Vector3D v, double scalar) => new Vector3D(v.X / scalar, v.Y / scalar, v.Z / scalar);
         public static Vector3D operator -(Vector3D v) => new Vector3D(-v.X, -v.Y, -v.Z);
+        public static bool operator ==(Vector3D v1, Vector3D v2) => (v1.X == v2.X && v1.Y == v2.Y && v1.Z == v2.Z);
+        public static bool operator !=(Vector3D v1, Vector3D v2) => !(v1 == v2);
         #endregion
     }
 }

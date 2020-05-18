@@ -38,31 +38,6 @@ namespace _3D_Graphics
         public Vector3D World_Direction { get; private set; }
         public Vector3D World_Direction_Up { get; private set; }
         public Vector3D World_Direction_Right { get; private set; }
-
-        public void Set_Shape_Direction_1(Vector3D new_world_direction, Vector3D new_world_direction_up)
-        {
-            if (new_world_direction * new_world_direction_up != 0) throw new Exception("Shape direction vectors are not orthogonal.");
-            new_world_direction = new_world_direction.Normalise(); new_world_direction_up = new_world_direction_up.Normalise();
-            World_Direction = new_world_direction;
-            World_Direction_Up = new_world_direction_up;
-            World_Direction_Right = new_world_direction.Cross_Product(new_world_direction_up);
-        }
-        public void Set_Shape_Direction_2(Vector3D new_world_direction_up, Vector3D new_world_direction_right)
-        {
-            if (new_world_direction_up * new_world_direction_right != 0) throw new Exception("Shape direction vectors are not orthogonal.");
-            new_world_direction_up = new_world_direction_up.Normalise(); new_world_direction_right = new_world_direction_right.Normalise();
-            World_Direction = new_world_direction_up.Cross_Product(new_world_direction_right); ;
-            World_Direction_Up = new_world_direction_up;
-            World_Direction_Right = new_world_direction_right;
-        }
-        public void Set_Shape_Direction_3(Vector3D new_world_direction_right, Vector3D new_world_direction)
-        {
-            if (new_world_direction_right * new_world_direction != 0) throw new Exception("Shape direction vectors are not orthogonal.");
-            new_world_direction_right = new_world_direction_right.Normalise(); new_world_direction = new_world_direction.Normalise();
-            World_Direction = new_world_direction;
-            World_Direction_Up = new_world_direction_right.Cross_Product(new_world_direction);
-            World_Direction_Right = new_world_direction_right;
-        }
         #endregion
 
         #region Draw settings
@@ -116,41 +91,41 @@ namespace _3D_Graphics
         public bool Visible { get; set; } = true;
 
         // Object transformations
-        public Matrix4x4 Model_to_world { get; private set; }
+        public Matrix4x4 Model_To_World { get; private set; }
         public Vector3D Scaling { get; protected set; } = Vector3D.One;
 
-        // Scale, then rotate, then translate
         public void Calculate_Model_to_World_Matrix()
         {
-            Matrix4x4 direction_rotation = Transform.Quaternion_Rotation_Matrix(Model_Direction, World_Direction);
-            Matrix4x4 direction_up_rotation = Transform.Quaternion_Rotation_Matrix(new Vector3D(direction_rotation * new Vector4D(Model_Direction_Up)), World_Direction_Up);
+            // Scale, then rotate, then translate
+            Matrix4x4 direction_rotation = Transform.Rotate_Between_Vectors(Model_Direction, World_Direction);
+            Matrix4x4 direction_up_rotation = Transform.Rotate_Between_Vectors(new Vector3D(direction_rotation * new Vector4D(Model_Direction_Up)), World_Direction_Up);
             Matrix4x4 scale = Transform.Scale(Scaling.X, Scaling.Y, Scaling.Z);
             Matrix4x4 translation = Transform.Translate(new Vector3D(World_Origin));
 
-            Model_to_world = translation * direction_up_rotation * direction_rotation * scale;
+            Model_To_World = translation * direction_up_rotation * direction_rotation * scale;
         }
 
         // Could world and model points be put into a single struct? With overloading possibly so the computer knows how to handle them?
         public void Apply_World_Matrices()
         {
-            World_Origin = Model_to_world * Model_Origin;
-            for (int i = 0; i < Model_Vertices.Length; i++) World_Vertices[i] = Model_to_world * Model_Vertices[i];
-            if (Draw_Spots) for (int i = 0; i < Spots.Length; i++) Spots[i].World_Point = Model_to_world * Spots[i].Model_Point;
+            World_Origin = Model_To_World * Model_Origin;
+            for (int i = 0; i < Model_Vertices.Length; i++) World_Vertices[i] = Model_To_World * Model_Vertices[i];
+            if (Draw_Spots) for (int i = 0; i < Spots.Length; i++) Spots[i].World_Point = Model_To_World * Spots[i].Model_Point;
             if (Draw_Edges)
             {
                 for (int i = 0; i < Edges.Length; i++)
                 {
-                    Edges[i].World_P1 = Model_to_world * Edges[i].Model_P1;
-                    Edges[i].World_P2 = Model_to_world * Edges[i].Model_P2;
+                    Edges[i].World_P1 = Model_To_World * Edges[i].Model_P1;
+                    Edges[i].World_P2 = Model_To_World * Edges[i].Model_P2;
                 }
             }
             if (Draw_Faces)
             {
                 for (int i = 0; i < Faces.Length; i++)
                 {
-                    Faces[i].World_P1 = Model_to_world * Faces[i].Model_P1;
-                    Faces[i].World_P2 = Model_to_world * Faces[i].Model_P2;
-                    Faces[i].World_P3 = Model_to_world * Faces[i].Model_P3;
+                    Faces[i].World_P1 = Model_To_World * Faces[i].Model_P1;
+                    Faces[i].World_P2 = Model_To_World * Faces[i].Model_P2;
+                    Faces[i].World_P3 = Model_To_World * Faces[i].Model_P3;
                 }
             }
         }

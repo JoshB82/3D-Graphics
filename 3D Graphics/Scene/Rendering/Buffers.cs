@@ -13,7 +13,7 @@ namespace _3D_Graphics
             }
         }
 
-        private void Check_Against_Z_Buffer_Texture(int x, int y, int tx, int ty, double z, Bitmap texture)
+        private void Textured_Check_Against_Z_Buffer(int x, int y, double z, int tx, int ty, Bitmap texture)
         {
             if (z < z_buffer[x][y])
             {

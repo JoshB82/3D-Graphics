@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 namespace _3D_Graphics
 {
@@ -128,6 +129,21 @@ namespace _3D_Graphics
             Faces = faces.ToArray();
             //TexturesTexture_Vertices
             
+            Debug.WriteLine($"Custom mesh created at {origin}");
+        }
+
+        public Custom(Vector3D origin, Vector3D direction, Vector3D direction_up, Mesh m1, Mesh m2)
+        {
+            World_Origin = new Vector4D(origin);
+            Set_Shape_Direction_1(direction, direction_up);
+
+            Model_Vertices = m1.Model_Vertices.Concat(m2.Model_Vertices).ToArray(); // Not entirely sure how this works?
+            Spots = m1.Spots.Concat(m2.Spots).ToArray();
+            Edges = m1.Edges.Concat(m2.Edges).ToArray();
+            Faces = m1.Faces.Concat(m2.Faces).ToArray();
+            Textures = m1.Textures.Concat(m2.Textures).ToArray();
+            Texture_Vertices = m1.Texture_Vertices.Concat(m2.Texture_Vertices).ToArray();
+
             Debug.WriteLine($"Custom mesh created at {origin}");
         }
     }

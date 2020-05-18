@@ -58,8 +58,8 @@ namespace _3D_Graphics
 
         public void Calculate_Model_to_World_Matrix()
         {
-            Matrix4x4 direction_rotation = Transform.Quaternion_Rotation_Matrix(Model_Direction, World_Direction);
-            Matrix4x4 direction_up_rotation = Transform.Quaternion_Rotation_Matrix(new Vector3D(direction_rotation * new Vector4D(Model_Direction_Up)), World_Direction_Up);
+            Matrix4x4 direction_rotation = Transform.Rotate_Between_Vectors(Model_Direction, World_Direction);
+            Matrix4x4 direction_up_rotation = Transform.Rotate_Between_Vectors(new Vector3D(direction_rotation * new Vector4D(Model_Direction_Up)), World_Direction_Up);
             Matrix4x4 translation = Transform.Translate(new Vector3D(World_Origin));
 
             Model_to_world = translation * direction_up_rotation * direction_rotation;
@@ -68,8 +68,8 @@ namespace _3D_Graphics
         public void Calculate_World_to_Screen_Matrix()
         {
             Matrix4x4 translation = Transform.Translate(-new Vector3D(World_Origin));
-            Matrix4x4 direction_up_rotation = Transform.Quaternion_Rotation_Matrix(World_Direction_Up, Model_Direction_Up);
-            Matrix4x4 direction_rotation = Transform.Quaternion_Rotation_Matrix(new Vector3D(direction_up_rotation * new Vector4D(World_Direction)), Model_Direction);
+            Matrix4x4 direction_up_rotation = Transform.Rotate_Between_Vectors(World_Direction_Up, Model_Direction_Up);
+            Matrix4x4 direction_rotation = Transform.Rotate_Between_Vectors(new Vector3D(direction_up_rotation * new Vector4D(World_Direction)), Model_Direction);
 
             World_to_camera = direction_rotation * direction_up_rotation * translation;
             World_to_screen = Camera_to_screen * World_to_camera;

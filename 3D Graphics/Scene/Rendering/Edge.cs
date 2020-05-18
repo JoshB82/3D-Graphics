@@ -2,7 +2,7 @@
 {
     public sealed partial class Scene
     {
-        public void Draw_Edge(Edge edge)
+        public void Draw_Edge(Edge edge, Camera camera)
         {
             // Clip the edge in world space
             foreach (Clipping_Plane world_clipping_plane in Render_Camera.World_Clipping_Planes)
@@ -14,8 +14,11 @@
             edge.World_P1 = Render_Camera.World_to_screen * edge.World_P1;
             edge.World_P2 = Render_Camera.World_to_screen * edge.World_P2;
 
-            edge.World_P1 /= edge.World_P1.W;
-            edge.World_P2 /= edge.World_P2.W;
+            if (camera.GetType().Name == "Perspective Camera")
+            {
+                edge.World_P1 /= edge.World_P1.W;
+                edge.World_P2 /= edge.World_P2.W;
+            }
 
             // Clip the edge in screen space
             foreach (Clipping_Plane projection_clipping_plane in projection_clipping_planes)
@@ -24,8 +27,8 @@
             }
 
             // Scale to the full screen size
-            Vector4D result_point_1 = Scale_to_screen(edge.World_P1);
-            Vector4D result_point_2 = Scale_to_screen(edge.World_P2);
+            Vector4D result_point_1 = screen_scale * edge.World_P1;
+            Vector4D result_point_2 = screen_scale * edge.World_P2;
 
             // Variable simplification
             int result_point_1_x = Round_To_Int(result_point_1.X);

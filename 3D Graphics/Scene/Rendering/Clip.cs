@@ -82,7 +82,8 @@ namespace _3D_Graphics
             }
 
             Vector4D first_intersection, second_intersection;
-            double d;
+            double d1, d2;
+            // check clockwise/anticlockwise stuff
 
             switch (inside_point_count)
             {
@@ -91,23 +92,23 @@ namespace _3D_Graphics
                     return 0;
                 case 1:
                     // One point is on the inside, so only a smaller triangle is needed
-                    first_intersection = new Vector4D(Vector3D.Line_Intersect_Plane(inside_points[0], outside_points[0], plane_point, plane_normal, out d));
-                    second_intersection = new Vector4D(Vector3D.Line_Intersect_Plane(inside_points[0], outside_points[1], plane_point, plane_normal, out d));
+                    first_intersection = new Vector4D(Vector3D.Line_Intersect_Plane(inside_points[0], outside_points[0], plane_point, plane_normal, out d1));
+                    second_intersection = new Vector4D(Vector3D.Line_Intersect_Plane(inside_points[0], outside_points[1], plane_point, plane_normal, out d2));
                     if (f.Texture == null)
                     {
                         f1 = new Face(new Vector4D(inside_points[0]), first_intersection, second_intersection, f.Colour);
                     }
                     else
                     {
-                        Vector3D t_intersection_1 = (outside_texture_points[0] - inside_texture_points[0]) * d + inside_texture_points[0];
-                        Vector3D t_intersection_2 = (outside_texture_points[1] - inside_texture_points[0]) * d + inside_texture_points[0];
+                        Vector3D t_intersection_1 = (outside_texture_points[0] - inside_texture_points[0]) * d1 + inside_texture_points[0];
+                        Vector3D t_intersection_2 = (outside_texture_points[1] - inside_texture_points[0]) * d2 + inside_texture_points[0];
                         f1 = new Face(new Vector4D(inside_points[0]), first_intersection, second_intersection, inside_texture_points[0], t_intersection_1, t_intersection_2, f.Texture);
                     }
                     return 1;
                 case 2:
                     // Two points are on the inside, so a quadrilateral is formed and split into two triangles
-                    first_intersection = new Vector4D(Vector3D.Line_Intersect_Plane(inside_points[0], outside_points[0], plane_point, plane_normal, out d));
-                    second_intersection = new Vector4D(Vector3D.Line_Intersect_Plane(inside_points[1], outside_points[0], plane_point, plane_normal, out d));
+                    first_intersection = new Vector4D(Vector3D.Line_Intersect_Plane(inside_points[0], outside_points[0], plane_point, plane_normal, out d1));
+                    second_intersection = new Vector4D(Vector3D.Line_Intersect_Plane(inside_points[1], outside_points[0], plane_point, plane_normal, out d2));
                     if (f.Texture == null)
                     {
                         f1 = new Face(new Vector4D(inside_points[0]), new Vector4D(inside_points[1]), first_intersection, f.Colour);
@@ -115,10 +116,10 @@ namespace _3D_Graphics
                     }
                     else
                     {
-                        Vector3D t_intersection_1 = (outside_texture_points[0] - inside_texture_points[0]) * d + inside_texture_points[0];
-                        Vector3D t_intersection_2 = (outside_texture_points[0] - inside_texture_points[1]) * d + inside_texture_points[1];
+                        Vector3D t_intersection_1 = (outside_texture_points[0] - inside_texture_points[0]) * d1 + inside_texture_points[0];
+                        Vector3D t_intersection_2 = (outside_texture_points[0] - inside_texture_points[1]) * d2 + inside_texture_points[1];
                         f1 = new Face(new Vector4D(inside_points[0]), new Vector4D(inside_points[1]), first_intersection, inside_texture_points[0], inside_texture_points[1], t_intersection_1, f.Texture);
-                        f2 = new Face(new Vector4D(inside_points[1]), second_intersection, first_intersection, inside_texture_points[1], t_intersection_2, t_intersection_1, f.Texture);
+                        f2 = new Face(new Vector4D(inside_points[1]), first_intersection, second_intersection, inside_texture_points[1], t_intersection_1, t_intersection_2, f.Texture);
                     }
                     return 2;
                 case 3:

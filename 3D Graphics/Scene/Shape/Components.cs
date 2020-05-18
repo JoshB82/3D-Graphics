@@ -91,4 +91,29 @@ namespace _3D_Graphics
             Visible = true;
         }
     }
+
+    public class Texture
+    {
+        /// <summary>
+        /// The bitmap file containing the texture data.
+        /// </summary>
+        public Bitmap File { get; set; }
+        /// <summary>
+        /// Defines how the outside of a texture file should be drawn.
+        /// </summary>
+        public Outside_Texture_Behaviour Outside_Behaviour { get; set; } = Outside_Texture_Behaviour.Repeat;
+        /// <summary>
+        /// Colour used to fill outside of texture should Outside_Texture_Behaviour.Colour_Fill be selected for Outside_Behaviour.
+        /// </summary>
+        public Color Outside_Colour { get; set; } = Color.Black;
+
+        public Texture(Bitmap file) => File = file;
+    }
+
+    public enum Outside_Texture_Behaviour : byte
+    {
+        Colour_Fill,
+        Repeat,
+        Edge_Stretch
+    }
 }

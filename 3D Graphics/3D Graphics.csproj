@@ -9,8 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Scene\Shape\Mesh\2D\Circle.cs" />
+    <Compile Remove="Scene\Shape\Mesh\3D\Arrow.cs" />
+    <Compile Remove="Scene\Shape\Mesh\3D\Cone.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Textures\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,7 +4,7 @@ namespace _3D_Graphics
 {
     public abstract partial class Camera : Scene_Object
     {
-        #region Rotations (Directions)
+        #region Rotations
         public void Set_Camera_Direction_1(Vector3D new_world_direction, Vector3D new_world_direction_up)
         {
             //if (new_world_direction * new_world_direction_up != 0) throw new Exception("Camera direction vectors are not orthogonal.");
@@ -49,7 +49,7 @@ namespace _3D_Graphics
         }
         #endregion
 
-        #region Translations (Position)
+        #region Translations
         public void Translate_X(double distance)
         {
             World_Origin += new Vector3D(distance, 0, 0);

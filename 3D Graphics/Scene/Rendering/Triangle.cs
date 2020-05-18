@@ -5,6 +5,11 @@ namespace _3D_Graphics
 {
     public sealed partial class Scene
     {
+        /// <summary>
+        /// Rounds a double value to the nearest integer.
+        /// </summary>
+        /// <param name="x">Double value to round.</param>
+        /// <returns>Rounded value.</returns>
         private static int Round_To_Int(double x) => (int)Math.Round(x, MidpointRounding.AwayFromZero);
 
         /// <summary>
@@ -18,14 +23,192 @@ namespace _3D_Graphics
             x1 = x2;
             x2 = temp;
         }
+        
+        private static void Sort_By_Y(
+            ref int x1, ref int y1, ref double z1,
+            ref int x2, ref int y2, ref double z2,
+            ref int x3, ref int y3, ref double z3)
+        {
+            // y1 highest; y3 lowest
+            if (y1 < y2)
+            {
+                Swap(ref x1, ref x2);
+                Swap(ref y1, ref y2);
+                Swap(ref z1, ref z2);
+            }
+            if (y1 < y3)
+            {
+                Swap(ref x1, ref x3);
+                Swap(ref y1, ref y3);
+                Swap(ref z1, ref z3);
+            }
+            if (y2 < y3)
+            {
+                Swap(ref x2, ref x3);
+                Swap(ref y2, ref y3);
+                Swap(ref z2, ref z3);
+            }
+        }
 
+        private static void Textured_Sort_By_Y(
+            ref int x1, ref int y1, ref double z1, ref double tx1, ref double ty1,
+            ref int x2, ref int y2, ref double z2, ref double tx2, ref double ty2,
+            ref int x3, ref int y3, ref double z3, ref double tx3, ref double ty3)
+        {
+            // y1 lowest; y3 highest
+            if (y1 < y2)
+            {
+                Swap(ref x1, ref x2);
+                Swap(ref y1, ref y2);
+                Swap(ref z1, ref z2);
+                Swap(ref tx1, ref tx2);
+                Swap(ref ty1, ref ty2);
+            }
+            if (y1 < y3)
+            {
+                Swap(ref x1, ref x3);
+                Swap(ref y1, ref y3);
+                Swap(ref z1, ref z3);
+                Swap(ref tx1, ref tx3);
+                Swap(ref ty1, ref ty3);
+            }
+            if (y2 < y3)
+            {
+                Swap(ref x2, ref x3);
+                Swap(ref y2, ref y3);
+                Swap(ref z2, ref z3);
+                Swap(ref tx2, ref tx3);
+                Swap(ref ty2, ref ty3);
+            }
+        }
+
+        private void Solid_Triangle(Color colour,
+             int x1, int y1, double z1,
+             int x2, int y2, double z2,
+             int x3, int y3, double z3)
+        {
+            // Don't draw anything if triangle is flat
+            if (x1 == x2 && x2 == x3) return;
+            if (y1 == y2 && y2 == y3) return;
+
+            // Sort the vertices by their y-co-ordinate
+            Sort_By_Y(
+                ref x1, ref y1, ref z1,
+                ref x2, ref y2, ref z2,
+                ref x3, ref y3, ref z3);
+
+
+        }
+
+        // doubles or ints for everything?
+        private void Textured_Triangle(Bitmap texture,
+            int x1, int y1, double z1, double tx1, double ty1,
+            int x2, int y2, double z2, double tx2, double ty2,
+            int x3, int y3, double z3, double tx3, double ty3)
+        {
+            // Don't draw anything if triangle is flat
+            if (x1 == x2 && x2 == x3) return;
+            if (y1 == y2 && y2 == y3) return;
+
+            // Sort the vertices by their y-co-ordinate
+            Textured_Sort_By_Y(
+                ref x1, ref y1, ref z1, ref tx1, ref ty1,
+                ref x2, ref y2, ref z2, ref tx2, ref ty2,
+                ref x3, ref y3, ref z3, ref tx3, ref ty3);
+
+            // Create steps
+            int dy_step_1 = y1 - y2;
+            int dy_step_2 = y1 - y3;
+            int dy_step_3 = y2 - y3;
+
+            double x_step_1 = (x1 - x2) / dy_step_1; // dx from point 2 to point 1
+            double x_step_2 = (x1 - x3) / dy_step_2; // dx from point 1 to point 3
+            double x_step_3 = (x2 - x3) / dy_step_3; // dx from point 2 to point 3
+            double tx_step_1 = (tx1 - tx2) / dy_step_1; // dtx from point 2 to point 1
+            double ty_step_1 = (ty1 - ty2) / dy_step_1; // dty from point 2 to point 1
+            double tx_step_2 = (tx1 - tx3) / dy_step_2; // dtx from point 1 to point 3
+            double ty_step_2 = (ty1 - ty3) / dy_step_2; // dty from point 1 to point 3
+            double tx_step_3 = (tx2 - tx3) / dy_step_3; // dtx from point 2 to point 3
+            double ty_step_3 = (ty2 - ty3) / dy_step_3; // dty from point 2 to point 3
+
+            // Draw a flat-bottom triangle
+            if (dy_step_1 != 0)
+            {
+                for (int y = y2; y <= y1; y++)
+                {
+                    int sx = Round_To_Int((y - y2) * x_step_1 + x2);
+                    int ex = Round_To_Int((y - y3) * x_step_2 + x3);
+
+                    double stx = (y - y2) * tx_step_1 + tx2;
+                    double sty = (y - y2) * ty_step_1 + ty2;
+
+                    double etx = (y - y3) * tx_step_2 + tx3;
+                    double ety = (y - y3) * ty_step_2 + ty3;
+
+                    /*
+                    if (stx > etx)
+                    {
+                        Swap(ref stx, ref etx);
+                        Swap(ref sty, ref ety);
+                    }
+                    */
+
+                    double t = 0, t_step = (double)1 / (ex - sx);
+                    for (int x = sx; x <= ex; x++)
+                    {
+                        double tx = stx + t * (etx - stx);
+                        double ty = sty + t * (ety - sty);
+                        t += t_step;
+                        Textured_Check_Against_Z_Buffer(x, y, 1, Round_To_Int(tx), Round_To_Int(ty), texture); // ?
+                    }
+                }
+            }
+
+            // Draw a flat-top triangle
+            if (dy_step_3 != 0)
+            {
+                for (int y = y3; y <= y2; y++)
+                {
+                    int sx = Round_To_Int((y - y3) * x_step_1 + x3);
+                    int ex = Round_To_Int((y - y3) * x_step_2 + x3);
+
+                    double stx = (y - y3) * tx_step_3 + tx3;
+                    double sty = (y - y3) * ty_step_3 + ty3;
+
+                    double etx = (y - y3) * tx_step_2 + tx3;
+                    double ety = (y - y3) * ty_step_2 + ty3;
+
+                    if (stx > etx)
+                    {
+                        Swap(ref stx, ref etx);
+                        Swap(ref sty, ref ety);
+                    }
+
+                    double t = 0, t_step = (double)1 / (ex - sx);
+                    for (int x = sx; x <= ex; x++)
+                    {
+                        double tx = stx + t * (etx - stx);
+                        double ty = sty + t * (ety - sty);
+                        t += t_step;
+                        Textured_Check_Against_Z_Buffer(x, y, 1, Round_To_Int(tx), Round_To_Int(ty), texture);
+                    }
+                }
+            }
+        }
+
+        /*
         private void Textured_Triangle(int x1, int y1, double z1, int x2, int y2, double z2, int x3, int y3, double z3, int tx1, int ty1, int tx2, int ty2, int tx3, int ty3, Bitmap texture)
         {
             Vector3D normal = Vector3D.Normal_From_Plane(new Vector3D(x1, y1, z1), new Vector3D(x2, y2, z2), new Vector3D(x3, y3, z3));
             double z_increase_x = -normal.X / normal.Z, z_increase_y = -normal.Y / normal.Z;
-
-            Sort_By_Y_2(ref x1, ref y1, ref z1, ref x2, ref y2, ref z2, ref x3, ref y3, ref z3, ref tx1, ref ty1, ref tx2, ref ty2, ref tx3, ref ty3);
-
+            /*
+            Vector3D point_1 = new Vector3D(x1, y1, z1);
+            Vector3D point_2 = new Vector3D(x2, y2, z2);
+            Vector3D point_3 = new Vector3D(x3, y3, z3);
+            Vector3D normal = Vector3D.Normal_From_Plane(point_1, point_2, point_3);
+            */
+            //Sort_By_Y_2(ref x1, ref y1, ref z1, ref x2, ref y2, ref z2, ref x3, ref y3, ref z3, ref tx1, ref ty1, ref tx2, ref ty2, ref tx3, ref ty3);
+            /*
             // need abs if y1 is always (?) greater than y2?
 
             // dx from 2 to 1
@@ -313,58 +496,6 @@ namespace _3D_Graphics
                 prev_x = start_x_value;
                 if (y != y1) z_value += z_increase_y;
             }
-        }
-
-        private static void Sort_By_Y(ref int x1, ref int y1, ref double z1, ref int x2, ref int y2, ref double z2, ref int x3, ref int y3, ref double z3)
-        {
-            // y1 highest; y3 lowest
-            if (y1 < y2)
-            {
-                Swap(ref x1, ref x2);
-                Swap(ref y1, ref y2);
-                Swap(ref z1, ref z2);
-            }
-            if (y1 < y3)
-            {
-                Swap(ref x1, ref x3);
-                Swap(ref y1, ref y3);
-                Swap(ref z1, ref z3);
-            }
-            if (y2 < y3)
-            {
-                Swap(ref x2, ref x3);
-                Swap(ref y2, ref y3);
-                Swap(ref z2, ref z3);
-            }
-        }
-
-        private static void Sort_By_Y_2(ref int x1, ref int y1, ref double z1, ref int x2, ref int y2, ref double z2, ref int x3, ref int y3, ref double z3, ref int tx1, ref int ty1, ref int tx2, ref int ty2, ref int tx3, ref int ty3)
-        {
-            // y1 lowest; y3 highest
-            if (y1 < y2)
-            {
-                Swap(ref x1, ref x2);
-                Swap(ref y1, ref y2);
-                Swap(ref z1, ref z2);
-                Swap(ref tx1, ref tx2);
-                Swap(ref ty1, ref ty2);
-            }
-            if (y1 < y3)
-            {
-                Swap(ref x1, ref x3);
-                Swap(ref y1, ref y3);
-                Swap(ref z1, ref z3);
-                Swap(ref tx1, ref tx3);
-                Swap(ref ty1, ref ty3);
-            }
-            if (y2 < y3)
-            {
-                Swap(ref x2, ref x3);
-                Swap(ref y2, ref y3);
-                Swap(ref z2, ref z3);
-                Swap(ref tx2, ref tx3);
-                Swap(ref ty2, ref ty3);
-            }
-        }
+        }*/
     }
 }

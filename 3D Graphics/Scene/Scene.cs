@@ -31,16 +31,33 @@ namespace _3D_Graphics
         public bool Change_scene { get; set; } = true;
 
         #region Dimensions
+        private Matrix4x4 screen_scale;
         private int width, height;
         public int Width
         {
             get => width;
-            set { lock (locker) { width = value; Set_Buffer(); } }
+            set
+            {
+                lock (locker)
+                {
+                    width = value;
+                    screen_scale = Transform.Scale(0.5 * (width - 1), 0.5 * (height - 1), 1) * Transform.Translate(new Vector3D(1, 1, 0));
+                    Set_Buffer();
+                }
+            }
         }
         public int Height
         {
             get => height;
-            set { lock (locker) { height = value; Set_Buffer(); } }
+            set
+            {
+                lock (locker)
+                {
+                    height = value;
+                    screen_scale = Transform.Scale(0.5 * (width - 1), 0.5 * (height - 1), 1) * Transform.Translate(new Vector3D(1, 1, 0));
+                    Set_Buffer();
+                }
+            }
         }
 
         private void Set_Buffer()
@@ -160,55 +177,29 @@ namespace _3D_Graphics
                         shape.Render_Mesh.Calculate_Model_to_World_Matrix();
                         shape.Render_Mesh.Apply_World_Matrices();
 
-                        // Draw faces
+                        // Draw faces (why the nulll stuff???)
                         if (shape.Render_Mesh.Faces != null && shape.Render_Mesh.Draw_Faces)
                         {
-                            foreach (Face face in shape.Render_Mesh.Faces)
-                            {
-                                if (face.Visible) Draw_Face(face, shape.Render_Mesh.GetType().Name);
-                            }
+                            foreach (Face face in shape.Render_Mesh.Faces) if (face.Visible) Draw_Face(face, shape.Render_Mesh.GetType().Name, Render_Camera);
                         }
 
                         // Draw edges
                         if (shape.Render_Mesh.Edges != null && shape.Render_Mesh.Draw_Edges)
                         {
-                            foreach (Edge edge in shape.Render_Mesh.Edges) if (edge.Visible) Draw_Edge(edge);
+                            foreach (Edge edge in shape.Render_Mesh.Edges) if (edge.Visible) Draw_Edge(edge, Render_Camera);
                         }
 
-                        /*
-                        // Draw vertices
-                        if (shape.Render_Mesh.Camera_Vertices != null && shape.Render_Mesh.Draw_Vertices)
+                        // Draw spots
+                        if (shape.Render_Mesh.Draw_Spots)
                         {
-                            foreach (Vertex vertex in shape.Render_Mesh.Camera_Vertices)
-                            {
-                                if (vertex.Visible)
-                                {
-                                    // Variable simplification
-                                    int point_x = (int)vertex.X;
-                                    int point_y = (int)vertex.Y;
-                                    double point_z = vertex.Z;
-
-                                    for (int x = point_x - vertex.Diameter / 2; x <= point_x + vertex.Diameter / 2; x++)
-                                    {
-                                        for (int y = point_y - vertex.Diameter / 2; y <= point_y + vertex.Diameter / 2; y++)
-                                        {
-                                            // Check against z buffer
-                                            if (z_buffer[x][y] > point_z)
-                                            {
-                                                z_buffer[x][y] = point_z;
-                                                colour_buffer[x][y] = shape.Render_Mesh.Vertex_Colour;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            foreach (Spot spot in shape.Render_Mesh.Spots) if (spot.Visible) Draw_Spot(spot, Render_Camera);
                         }
-                        */
                     }
 
-                    foreach (Camera camera_to_draw in Camera_List) Draw_Camera(camera_to_draw);
+                    // Draw camera views
+                    foreach (Camera camera_to_draw in Camera_List) Draw_Camera(camera_to_draw, Render_Camera);
 
-                    // Draw each pixel from colour buffer
+                    // Draw each pixel from the colour buffer
                     for (int x = 0; x < Width; x++)
                     {
                         for (int y = 0; y < Height; y++)
@@ -223,7 +214,5 @@ namespace _3D_Graphics
                 Change_scene = false;
             }
         }
-
-        public Vector4D Scale_to_screen(Vector4D vertex) => Transform.Scale(0.5 * (Width - 1), 0.5 * (Height - 1), 1) * Transform.Translate(new Vector3D(1, 1, 0)) * vertex;
     }
 }
