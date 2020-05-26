@@ -10,7 +10,7 @@ namespace _3D_Graphics
             World_Origin = new Vector4D(start_position);
             Set_Shape_Direction_1(Vector3D.Unit_X, Vector3D.Unit_Y);
 
-            Model_Vertices = new Vector4D[2]
+            Vertices = new Vector4D[2]
             {
                 new Vector4D(0, 0, 0), // 0
                 new Vector4D(1, 1, 1) // 1
@@ -18,13 +18,13 @@ namespace _3D_Graphics
 
             Spots = new Spot[]
             {
-                new Spot(Model_Vertices[0]), // 0
-                new Spot(Model_Vertices[1]) // 1
+                new Spot(Vertices[0]), // 0
+                new Spot(Vertices[1]) // 1
             };
 
             Edges = new Edge[1]
             {
-                new Edge(Model_Vertices[0], Model_Vertices[1]) // 0
+                new Edge(Vertices[0], Vertices[1]) // 0
             };
 
             Draw_Faces = false;

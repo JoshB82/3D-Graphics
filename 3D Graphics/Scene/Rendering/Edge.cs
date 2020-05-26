@@ -2,44 +2,59 @@
 {
     public sealed partial class Scene
     {
-        public void Draw_Edge(Edge edge, Camera camera)
+        private void Draw_Edge(Edge edge, string camera_type,
+            Matrix4x4 model_to_world,
+            Matrix4x4 world_to_view,
+            Matrix4x4 view_to_screen)
         {
-            // Clip the edge in world space
-            foreach (Clipping_Plane world_clipping_plane in Render_Camera.World_Clipping_Planes)
+            // Move the edge from model space to world space
+            edge.P1 = model_to_world * edge.P1;
+            edge.P2 = model_to_world * edge.P2;
+            edge.World_P1 = model_to_world * edge.World_P1;
+            edge.World_P2 = model_to_world * edge.World_P2;
+
+            // Move the edge from world space to view space
+            edge.P1 = world_to_view * edge.P1;
+            edge.P2 = world_to_view * edge.P2;
+
+            // Clip the edge in view space
+            foreach (Clipping_Plane view_clipping_plane in Render_Camera.View_Clipping_Planes)
             {
-                if (!Clip_Edge(world_clipping_plane.Point, world_clipping_plane.Normal, ref edge)) return;
+                if (!Clip_Edge(view_clipping_plane.Point, view_clipping_plane.Normal, ref edge)) return;
             }
 
-            // Transform the edge into screen space and correct for perspective
-            edge.World_P1 = Render_Camera.World_to_screen * edge.World_P1;
-            edge.World_P2 = Render_Camera.World_to_screen * edge.World_P2;
+            // Move the edge from view space to screen space, including a correction for perspective
+            edge.World_P1 = view_to_screen * edge.World_P1;
+            edge.World_P2 = view_to_screen * edge.World_P2;
 
-            if (camera.GetType().Name == "Perspective Camera")
+            if (camera_type == "Perspective_Camera")
             {
                 edge.World_P1 /= edge.World_P1.W;
                 edge.World_P2 /= edge.World_P2.W;
             }
 
             // Clip the edge in screen space
-            foreach (Clipping_Plane projection_clipping_plane in projection_clipping_planes)
+            foreach (Clipping_Plane screen_clipping_plane in screen_clipping_planes)
             {
-                if (!Clip_Edge(projection_clipping_plane.Point, projection_clipping_plane.Normal, ref edge)) return;
+                if (!Clip_Edge(screen_clipping_plane.Point, screen_clipping_plane.Normal, ref edge)) return;
             }
 
-            // Scale to the full screen size
-            Vector4D result_point_1 = screen_scale * edge.World_P1;
-            Vector4D result_point_2 = screen_scale * edge.World_P2;
+            // Mode the edge from screen space to window space
+            edge.P1 = screen_to_window * edge.P1;
+            edge.P2 = screen_to_window * edge.P2;
 
-            // Variable simplification
-            int result_point_1_x = Round_To_Int(result_point_1.X);
-            int result_point_1_y = Round_To_Int(result_point_1.Y);
-            double result_point_1_z = result_point_1.Z;
-            int result_point_2_x = Round_To_Int(result_point_2.X);
-            int result_point_2_y = Round_To_Int(result_point_2.Y);
-            double result_point_2_z = result_point_2.Z;
+            // Round the vertices
+            int result_point_1_x = Round_To_Int(edge.P1.X);
+            int result_point_1_y = Round_To_Int(edge.P1.Y);
+            double result_point_1_z = edge.P1.Z;
+            int result_point_2_x = Round_To_Int(edge.P2.X);
+            int result_point_2_y = Round_To_Int(edge.P2.Y);
+            double result_point_2_z = edge.P2.Z;
 
             // Finally draw the line
-            Line(result_point_1_x, result_point_1_y, result_point_1_z, result_point_2_x, result_point_2_y, result_point_2_z, edge.Colour);
+            Line(edge.Colour,
+                result_point_1_x, result_point_1_y, result_point_1_z,
+                result_point_2_x, result_point_2_y, result_point_2_z);
         }
     }
 }

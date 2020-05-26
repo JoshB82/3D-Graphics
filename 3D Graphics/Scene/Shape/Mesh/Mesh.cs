@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace _3D_Graphics
 {
     public abstract partial class Mesh
     {
-        // SORT OUT!
-        #region Structure
-        public Vector4D Model_Origin { get; } = Vector4D.Zero;
+        #region Fields and properties
+
+        // Origins
+        public Vector4D Origin { get; set; } = Vector4D.Zero;
         public Vector4D World_Origin { get; set; }
 
-        private Vector4D[] model_vertices;
-        public Vector4D[] Model_Vertices
+        // Structure
+        private Vector4D[] vertices;
+        public Vector4D[] Vertices
         {
-            get => model_vertices;
+            get => vertices;
             protected set
             {
-                model_vertices = value;
+                vertices = value;
                 World_Vertices = new Vector4D[value.Length];
             }
         }
@@ -28,9 +31,8 @@ namespace _3D_Graphics
         public Spot[] Spots { get; protected set; }
         public Edge[] Edges { get; protected set; }
         public Face[] Faces { get; protected set; }
-        #endregion
 
-        #region Directions
+        // Directions
         public Vector3D Model_Direction { get; } = Vector3D.Unit_X;
         public Vector3D Model_Direction_Up { get; } = Vector3D.Unit_Y;
         public Vector3D Model_Direction_Right { get; } = Vector3D.Unit_Z;
@@ -38,16 +40,26 @@ namespace _3D_Graphics
         public Vector3D World_Direction { get; private set; }
         public Vector3D World_Direction_Up { get; private set; }
         public Vector3D World_Direction_Right { get; private set; }
-        #endregion
 
-        #region Draw settings
+        // Appearance
+        /// <summary>
+        /// Determines if the mesh's spots are to be drawn.
+        /// </summary>
         public bool Draw_Spots { get; set; } = true;
+        /// <summary>
+        /// Determines if the mesh's edges are drawn.
+        /// </summary>
         public bool Draw_Edges { get; set; } = true;
+        /// <summary>
+        /// Determines if the mesh's faces are to be drawn.
+        /// </summary>
         public bool Draw_Faces { get; set; } = true;
-        #endregion
 
-        #region Colours
+        // Colours
         private Color spot_colour, edge_colour, face_colour;
+        /// <summary>
+        /// The colour of each spot in the mesh.
+        /// </summary>
         public Color Spot_Colour
         {
             get => spot_colour;
@@ -58,6 +70,9 @@ namespace _3D_Graphics
                 for (int i = 0; i < Spots.Length; i++) Spots[i].Colour = value;
             }
         }
+        /// <summary>
+        /// The colour of each edge in the mesh.
+        /// </summary>
         public Color Edge_Colour
         {
             get => edge_colour;
@@ -68,6 +83,9 @@ namespace _3D_Graphics
                 for (int i = 0; i < Edges.Length; i++) Edges[i].Colour = value;
             }
         }
+        /// <summary>
+        /// The colour of each face in the mesh.
+        /// </summary>
         public Color Face_Colour
         {
             get => face_colour;
@@ -78,7 +96,6 @@ namespace _3D_Graphics
                 for (int i = 0; i < Faces.Length; i++) Faces[i].Colour = value;
             }
         }
-        #endregion
 
         // Miscellaneous
         /// <summary>
@@ -91,8 +108,10 @@ namespace _3D_Graphics
         public bool Visible { get; set; } = true;
 
         // Object transformations
-        public Matrix4x4 Model_To_World { get; private set; }
+        public Matrix4x4 Model_to_World { get; private set; }
         public Vector3D Scaling { get; protected set; } = Vector3D.One;
+
+        #endregion
 
         public void Calculate_Model_to_World_Matrix()
         {
@@ -102,32 +121,9 @@ namespace _3D_Graphics
             Matrix4x4 scale = Transform.Scale(Scaling.X, Scaling.Y, Scaling.Z);
             Matrix4x4 translation = Transform.Translate(new Vector3D(World_Origin));
 
-            Model_To_World = translation * direction_up_rotation * direction_rotation * scale;
+            Model_to_World = translation * direction_up_rotation * direction_rotation * scale;
         }
 
         // Could world and model points be put into a single struct? With overloading possibly so the computer knows how to handle them?
-        public void Apply_World_Matrices()
-        {
-            World_Origin = Model_To_World * Model_Origin;
-            for (int i = 0; i < Model_Vertices.Length; i++) World_Vertices[i] = Model_To_World * Model_Vertices[i];
-            if (Draw_Spots) for (int i = 0; i < Spots.Length; i++) Spots[i].World_Point = Model_To_World * Spots[i].Model_Point;
-            if (Draw_Edges)
-            {
-                for (int i = 0; i < Edges.Length; i++)
-                {
-                    Edges[i].World_P1 = Model_To_World * Edges[i].Model_P1;
-                    Edges[i].World_P2 = Model_To_World * Edges[i].Model_P2;
-                }
-            }
-            if (Draw_Faces)
-            {
-                for (int i = 0; i < Faces.Length; i++)
-                {
-                    Faces[i].World_P1 = Model_To_World * Faces[i].Model_P1;
-                    Faces[i].World_P2 = Model_To_World * Faces[i].Model_P2;
-                    Faces[i].World_P3 = Model_To_World * Faces[i].Model_P3;
-                }
-            }
-        }
     }
 }

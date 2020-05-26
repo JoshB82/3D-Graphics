@@ -15,7 +15,7 @@ namespace _3D_Graphics
         public readonly List<Light> Light_List = new List<Light>();
         public readonly List<Shape> Shape_List = new List<Shape>();
 
-        private Clipping_Plane[] projection_clipping_planes;
+        private Clipping_Plane[] screen_clipping_planes;
 
         public Camera Render_Camera { get; set; }
 
@@ -31,7 +31,8 @@ namespace _3D_Graphics
         public bool Change_scene { get; set; } = true;
 
         #region Dimensions
-        private Matrix4x4 screen_scale;
+
+        private Matrix4x4 screen_to_window;
         private int width, height;
         public int Width
         {
@@ -41,7 +42,7 @@ namespace _3D_Graphics
                 lock (locker)
                 {
                     width = value;
-                    screen_scale = Transform.Scale(0.5 * (width - 1), 0.5 * (height - 1), 1) * Transform.Translate(new Vector3D(1, 1, 0));
+                    screen_to_window = Transform.Scale(0.5 * (width - 1), 0.5 * (height - 1), 1) * Transform.Translate(new Vector3D(1, 1, 0));
                     Set_Buffer();
                 }
             }
@@ -54,7 +55,7 @@ namespace _3D_Graphics
                 lock (locker)
                 {
                     height = value;
-                    screen_scale = Transform.Scale(0.5 * (width - 1), 0.5 * (height - 1), 1) * Transform.Translate(new Vector3D(1, 1, 0));
+                    screen_to_window = Transform.Scale(0.5 * (width - 1), 0.5 * (height - 1), 1) * Transform.Translate(new Vector3D(1, 1, 0));
                     Set_Buffer();
                 }
             }
@@ -67,6 +68,7 @@ namespace _3D_Graphics
             for (int i = 0; i < width; i++) z_buffer[i] = new double[height];
             for (int i = 0; i < width; i++) colour_buffer[i] = new Color[height];
         }
+        
         #endregion
 
         /// <summary>
@@ -85,7 +87,7 @@ namespace _3D_Graphics
             Canvas = new Bitmap(width, height);
 
             Vector3D near_bottom_left_point = new Vector3D(-1, -1, -1), far_top_right_point = new Vector3D(1, 1, 1);
-            projection_clipping_planes = new Clipping_Plane[]
+            screen_clipping_planes = new Clipping_Plane[]
             {
                 new Clipping_Plane(near_bottom_left_point, Vector3D.Unit_X), // Left
                 new Clipping_Plane(near_bottom_left_point, Vector3D.Unit_Y), // Bottom
@@ -97,6 +99,7 @@ namespace _3D_Graphics
         }
 
         #region Add to scene methods
+
         /// <summary>
         /// Add an object to the scene.
         /// </summary>
@@ -139,6 +142,7 @@ namespace _3D_Graphics
                     break;
             }
         }
+
         #endregion
 
         public void Remove(int ID)
@@ -151,7 +155,7 @@ namespace _3D_Graphics
             if (Canvas_box == null) throw new Exception("No picture box has been set yet!");
             if (Render_Camera == null) throw new Exception("No camera has been set yet!");
 
-            // Only render if a change in scene has taken place.
+            // Only render if a change in scene has taken place
             // if (!Change_scene) return;
 
             lock (locker)
@@ -160,44 +164,70 @@ namespace _3D_Graphics
                 Bitmap temp_canvas = new Bitmap(Width, Height);
 
                 // Reset buffers
-                for (int i = 0; i < Width; i++) for (int j = 0; j < Height; j++) z_buffer[i][j] = 2; // 2 is always greater than anything to be rendered.
+                for (int i = 0; i < Width; i++) for (int j = 0; j < Height; j++) z_buffer[i][j] = 2; // 2 is always greater than anything to be rendered??///
                 for (int i = 0; i < Width; i++) for (int j = 0; j < Height; j++) colour_buffer[i][j] = Background_colour;
 
-                // Calculate camera matrices
+                // Calculate and apply camera matrices
                 Render_Camera.Calculate_Model_to_World_Matrix();
-                Render_Camera.Apply_World_Matrix();
-                Render_Camera.Calculate_World_to_Screen_Matrix();
-                
+                Render_Camera.Apply_Model_to_World_Matrix();
+                Render_Camera.Calculate_World_to_View_Matrix();
+
+                // Calculate camera properties
+                string camera_type = Render_Camera.GetType().Name;
+                Matrix4x4 world_to_view = Render_Camera.World_to_View;
+                Matrix4x4 view_to_screen = Render_Camera.View_to_Screen;
+
                 // Draw graphics
                 using (Graphics g = Graphics.FromImage(temp_canvas))
                 {
+                    // Draw shapes
                     foreach (Shape shape in Shape_List)
                     {
-                        // Move shapes from model space to world space
-                        shape.Render_Mesh.Calculate_Model_to_World_Matrix();
-                        shape.Render_Mesh.Apply_World_Matrices();
+                        Mesh shape_mesh = shape.Render_Mesh;
 
-                        // Draw faces (why the nulll stuff???)
-                        if (shape.Render_Mesh.Faces != null && shape.Render_Mesh.Draw_Faces)
+                        // Calculate shape matrix
+                        shape_mesh.Calculate_Model_to_World_Matrix();
+                        Matrix4x4 model_to_world = shape_mesh.Model_to_World;
+
+                        shape_mesh.Origin = screen_to_window * view_to_screen * world_to_view * model_to_world * shape_mesh.Origin;
+                        shape_mesh.World_Origin = model_to_world * shape_mesh.Origin;
+                        
+                        string shape_type = shape_mesh.GetType().Name;
+
+                        // Draw faces
+                        if (shape_mesh.Draw_Faces && shape_mesh.Visible)
                         {
-                            foreach (Face face in shape.Render_Mesh.Faces) if (face.Visible) Draw_Face(face, shape.Render_Mesh.GetType().Name, Render_Camera);
+                            foreach (Face face in shape.Render_Mesh.Faces)
+                            {
+                                if (face.Visible) Draw_Face(face, camera_type, shape_type, model_to_world, world_to_view, view_to_screen);
+                            }
                         }
 
                         // Draw edges
-                        if (shape.Render_Mesh.Edges != null && shape.Render_Mesh.Draw_Edges)
+                        if (shape_mesh.Draw_Edges && shape_mesh.Visible)
                         {
-                            foreach (Edge edge in shape.Render_Mesh.Edges) if (edge.Visible) Draw_Edge(edge, Render_Camera);
+                            foreach (Edge edge in shape.Render_Mesh.Edges)
+                            {
+                                if (edge.Visible) Draw_Edge(edge, camera_type, model_to_world, world_to_view, view_to_screen);
+                            }
                         }
 
                         // Draw spots
-                        if (shape.Render_Mesh.Draw_Spots)
+                        if (shape_mesh.Draw_Spots && shape_mesh.Visible)
                         {
                             foreach (Spot spot in shape.Render_Mesh.Spots) if (spot.Visible) Draw_Spot(spot, Render_Camera);
                         }
                     }
 
                     // Draw camera views
-                    foreach (Camera camera_to_draw in Camera_List) Draw_Camera(camera_to_draw, Render_Camera);
+                    foreach (Camera camera_to_draw in Camera_List)
+                    {
+                        // Calculate camera matrix
+                        camera_to_draw.Calculate_Model_to_World_Matrix();
+                        Matrix4x4 model_to_world = camera_to_draw.Model_to_World;
+                        
+                        Draw_Camera(camera_to_draw, camera_type, model_to_world, world_to_view, view_to_screen);
+                    }
 
                     // Draw each pixel from the colour buffer
                     for (int x = 0; x < Width; x++)

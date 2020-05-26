@@ -5,7 +5,9 @@ namespace _3D_Graphics
 {
     public sealed partial class Scene
     {
-        private void Line(int x1, int y1, double z1, int x2, int y2, double z2, Color colour)
+        private void Line(Color colour,
+            int x1, int y1, double z1,
+            int x2, int y2, double z2)
         {
             if (x1 == x2)
             {

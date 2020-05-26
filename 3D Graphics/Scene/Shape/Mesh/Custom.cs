@@ -21,7 +21,7 @@ namespace _3D_Graphics
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, direction_up);
 
-            Model_Vertices = vertices;
+            Vertices = vertices;
             Spots = spots;
             Edges = edges;
             Faces = faces;
@@ -40,7 +40,7 @@ namespace _3D_Graphics
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, direction_up);
 
-            Model_Vertices = vertices;
+            Vertices = vertices;
             Spots = spots;
             Edges = edges;
             Faces = faces;
@@ -123,7 +123,7 @@ namespace _3D_Graphics
             // Will it stop in the event of an error?
             catch (Exception error) { Debug.WriteLine($"Error: {error.Message}"); }
 
-            Model_Vertices = vertices.ToArray();
+            Vertices = vertices.ToArray();
             Draw_Spots = false;
             Edges = edges.ToArray();
             Faces = faces.ToArray();
@@ -137,7 +137,7 @@ namespace _3D_Graphics
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, direction_up);
 
-            Model_Vertices = m1.Model_Vertices.Concat(m2.Model_Vertices).ToArray(); // Not entirely sure how this works?
+            Vertices = m1.Vertices.Concat(m2.Vertices).ToArray(); // Not entirely sure how this works?
             Spots = m1.Spots.Concat(m2.Spots).ToArray();
             Edges = m1.Edges.Concat(m2.Edges).ToArray();
             Faces = m1.Faces.Concat(m2.Faces).ToArray();

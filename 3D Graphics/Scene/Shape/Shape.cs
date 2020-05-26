@@ -2,25 +2,20 @@
 {
     public class Shape : Scene_Object
     {
-        #region ID
+        #region Fields and properties
+
+        // ID
         /// <summary>
         /// Unique identification number for this shape.
         /// </summary>
         public int ID { get; private set; }
         private static int next_id = -1;
-        protected static int Get_Next_ID()
-        {
-            next_id++;
-            return next_id;
-        }
-        #endregion
 
-        #region Meshes
+        // Meshes
         public Mesh Collision_Mesh { get; set; }
         public Mesh Render_Mesh { get; set; }
-        #endregion
 
-        #region Appearance
+        // Appearance
         /// <summary>
         /// Determines if the shape is selected or not.
         /// </summary>
@@ -29,6 +24,7 @@
         /// Determines if the shape is visible or not.
         /// </summary>
         public bool Visible { get; set; } = true;
+
         #endregion
 
         /// <summary>
@@ -38,7 +34,7 @@
         /// <param name="render_mesh">The mesh that will be rendered to the screen.</param>
         public Shape(Mesh collision_mesh, Mesh render_mesh)
         {
-            ID = Get_Next_ID();
+            ID = ++next_id;
 
             Collision_Mesh = collision_mesh;
             Render_Mesh = render_mesh;

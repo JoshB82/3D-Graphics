@@ -97,10 +97,64 @@ namespace _3D_Graphics
                 ref x2, ref y2, ref z2,
                 ref x3, ref y3, ref z3);
 
+            // Create steps
+            int dy_step_1 = y1 - y2;
+            int dy_step_2 = y1 - y3;
+            int dy_step_3 = y2 - y3;
 
+            double x_step_1 = (x1 - x2) / dy_step_1; // dx from point 2 to point 1
+            double x_step_2 = (x1 - x3) / dy_step_2; // dx from point 1 to point 3
+            double x_step_3 = (x2 - x3) / dy_step_3; // dx from point 2 to point 3
+            double z_step_1 = (z1 - z2) / dy_step_1; // dz from point 2 to point 1
+            double z_step_2 = (z1 - z3) / dy_step_2; // dz from point 1 to point 3
+            double z_step_3 = (z2 - z3) / dy_step_3; // dz from point 2 to point 3
+
+            // Draw a flat-bottom triangle
+            if (dy_step_1 != 0)
+            {
+                for (int y = y2; y <= y1; y++)
+                {
+                    int sx = Round_To_Int((y - y2) * x_step_1 + x2);
+                    int ex = Round_To_Int((y - y3) * x_step_2 + x3);
+                    double sz = (y - y2) * z_step_1 + z2;
+                    double ez = (y - y3) * z_step_2 + z3;
+
+                    // ???
+                    if (sx > ex) Swap(ref sx, ref ex);
+                    if (sz > ez) Swap(ref sz, ref ez);
+
+                    for (int x = sx; x <= ex; x++)
+                    {
+                        Check_Against_Z_Buffer(x, y, 1, colour); // ?
+                    }
+                }
+            }
+
+            // Draw a flat-top triangle
+            if (dy_step_3 != 0)
+            {
+                for (int y = y3; y <= y2; y++)
+                {
+                    int sx = Round_To_Int((y - y3) * x_step_3 + x3);
+                    int ex = Round_To_Int((y - y3) * x_step_2 + x3);
+                    double sz = (y - y3) * z_step_1 + z3;
+                    double ez = (y - y3) * z_step_2 + z3;
+
+                    if (sx > ex)
+                    {
+                        Swap(ref sx, ref ex);
+                        Swap(ref sz, ref ez);
+                    }
+
+                    for (int x = sx; x <= ex; x++)
+                    {
+                        Check_Against_Z_Buffer(x, y, 1, colour); // ?
+                    }
+                }
+            }
         }
 
-        // doubles or ints for everything?
+        // doubles or ints for everything? Should it take an average of texels?
         private void Textured_Triangle(Bitmap texture,
             int x1, int y1, double z1, double tx1, double ty1,
             int x2, int y2, double z2, double tx2, double ty2,
@@ -121,16 +175,25 @@ namespace _3D_Graphics
             int dy_step_2 = y1 - y3;
             int dy_step_3 = y2 - y3;
 
-            double x_step_1 = (x1 - x2) / dy_step_1; // dx from point 2 to point 1
+            double x_step_1 = 0, tx_step_1 = 0, ty_step_1 = 0;
+            double x_step_3 = 0, tx_step_3 = 0, ty_step_3 = 0;
+
+            if (dy_step_1 != 0)
+            {
+                x_step_1 = (x1 - x2) / dy_step_1; // dx from point 2 to point 1
+                tx_step_1 = (tx1 - tx2) / dy_step_1; // dtx from point 2 to point 1
+                ty_step_1 = (ty1 - ty2) / dy_step_1; // dty from point 2 to point 1
+            }
             double x_step_2 = (x1 - x3) / dy_step_2; // dx from point 1 to point 3
-            double x_step_3 = (x2 - x3) / dy_step_3; // dx from point 2 to point 3
-            double tx_step_1 = (tx1 - tx2) / dy_step_1; // dtx from point 2 to point 1
-            double ty_step_1 = (ty1 - ty2) / dy_step_1; // dty from point 2 to point 1
             double tx_step_2 = (tx1 - tx3) / dy_step_2; // dtx from point 1 to point 3
             double ty_step_2 = (ty1 - ty3) / dy_step_2; // dty from point 1 to point 3
-            double tx_step_3 = (tx2 - tx3) / dy_step_3; // dtx from point 2 to point 3
-            double ty_step_3 = (ty2 - ty3) / dy_step_3; // dty from point 2 to point 3
-
+            if (dy_step_3 != 0)
+            {
+                x_step_3 = (x2 - x3) / dy_step_3; // dx from point 2 to point 3
+                tx_step_3 = (tx2 - tx3) / dy_step_3; // dtx from point 2 to point 3
+                ty_step_3 = (ty2 - ty3) / dy_step_3; // dty from point 2 to point 3
+            }
+            
             // Draw a flat-bottom triangle
             if (dy_step_1 != 0)
             {
@@ -145,13 +208,13 @@ namespace _3D_Graphics
                     double etx = (y - y3) * tx_step_2 + tx3;
                     double ety = (y - y3) * ty_step_2 + ty3;
 
-                    /*
-                    if (stx > etx)
+                    // ?
+                    if (sx > ex)
                     {
+                        Swap(ref sx, ref ex);
                         Swap(ref stx, ref etx);
                         Swap(ref sty, ref ety);
                     }
-                    */
 
                     double t = 0, t_step = (double)1 / (ex - sx);
                     for (int x = sx; x <= ex; x++)
@@ -169,7 +232,7 @@ namespace _3D_Graphics
             {
                 for (int y = y3; y <= y2; y++)
                 {
-                    int sx = Round_To_Int((y - y3) * x_step_1 + x3);
+                    int sx = Round_To_Int((y - y3) * x_step_3 + x3);
                     int ex = Round_To_Int((y - y3) * x_step_2 + x3);
 
                     double stx = (y - y3) * tx_step_3 + tx3;
@@ -178,8 +241,9 @@ namespace _3D_Graphics
                     double etx = (y - y3) * tx_step_2 + tx3;
                     double ety = (y - y3) * ty_step_2 + ty3;
 
-                    if (stx > etx)
+                    if (sx > ex)
                     {
+                        Swap(ref sx, ref ex);
                         Swap(ref stx, ref etx);
                         Swap(ref sty, ref ety);
                     }

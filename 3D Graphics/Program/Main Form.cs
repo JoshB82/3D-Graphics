@@ -56,10 +56,12 @@ namespace _3D_Graphics
             scene.Add(cube);
             */
 
+            /*
             Cuboid cuboid_mesh = new Cuboid(new Vector3D(100, 0, 100), Vector3D.Unit_X, Vector3D.Unit_Y, 30, 40, 90, smiley);
             Shape cuboid = new Shape(cuboid_mesh);
             scene.Add(cuboid);
-            
+            */
+
             /*
             Plane plane_mesh = new Plane(new Vector3D(0, 0, -30), Vector3D.Unit_X, Vector3D.Unit_Y, 100, 100) { Face_Colour = Color.Aqua };
             Shape plane = new Shape(plane_mesh);
@@ -83,11 +85,13 @@ namespace _3D_Graphics
             Shape test_plane_shape = new Shape(test_plane);
             scene.Add(test_plane_shape);
 
+            /*
             // Add object from file
             Custom teapot_mesh = new Custom(Vector3D.Zero, Vector3D.Unit_X, Vector3D.Unit_Y, "C:\\Users\\jbrya\\source\\repos\\3D Graphics\\3D Graphics\\Models\\teapot.obj");
             Shape teapot = new Shape(teapot_mesh);
             scene.Add(teapot);
             teapot_mesh.Scale(20);
+            */
 
             Thread graphics_thread = new Thread(Game_Loop);
             graphics_thread.Start();

@@ -6,7 +6,7 @@
     public sealed class Clipping_Plane
     {
         /// <summary>
-        /// Any point on the clipping plane.
+        /// A point on the clipping plane.
         /// </summary>
         public Vector3D Point { get; set; }
         /// <summary>

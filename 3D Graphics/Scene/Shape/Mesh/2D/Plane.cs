@@ -36,7 +36,7 @@ namespace _3D_Graphics
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, normal);
 
-            Model_Vertices = new Vector4D[4]
+            Vertices = new Vector4D[4]
             {
                 new Vector4D(0, 0, 0), // 0
                 new Vector4D(1, 0, 0), // 1
@@ -46,25 +46,25 @@ namespace _3D_Graphics
 
             Spots = new Spot[4]
             {
-                new Spot(Model_Vertices[0]), // 0
-                new Spot(Model_Vertices[1]), // 1
-                new Spot(Model_Vertices[2]), // 2
-                new Spot(Model_Vertices[3]) // 3
+                new Spot(Vertices[0]), // 0
+                new Spot(Vertices[1]), // 1
+                new Spot(Vertices[2]), // 2
+                new Spot(Vertices[3]) // 3
             };
 
             Edges = new Edge[5]
             {
-                new Edge(Model_Vertices[0], Model_Vertices[1]), // 0
-                new Edge(Model_Vertices[1], Model_Vertices[2]), // 1
-                new Edge(Model_Vertices[0], Model_Vertices[2]) { Visible = false }, // 2
-                new Edge(Model_Vertices[2], Model_Vertices[3]), // 3
-                new Edge(Model_Vertices[0], Model_Vertices[3]) // 4
+                new Edge(Vertices[0], Vertices[1]), // 0
+                new Edge(Vertices[1], Vertices[2]), // 1
+                new Edge(Vertices[0], Vertices[2]) { Visible = false }, // 2
+                new Edge(Vertices[2], Vertices[3]), // 3
+                new Edge(Vertices[0], Vertices[3]) // 4
             };
 
             Faces = new Face[2]
             {
-                new Face(Model_Vertices[0], Model_Vertices[1], Model_Vertices[2]), // 0
-                new Face(Model_Vertices[0], Model_Vertices[2], Model_Vertices[3]) // 1
+                new Face(Vertices[0], Vertices[1], Vertices[2]), // 0
+                new Face(Vertices[0], Vertices[2], Vertices[3]) // 1
             };
 
             Spot_Colour = Color.Blue;
@@ -82,7 +82,7 @@ namespace _3D_Graphics
             World_Origin = new Vector4D(origin);
             Set_Shape_Direction_1(direction, normal);
 
-            Model_Vertices = new Vector4D[4]
+            Vertices = new Vector4D[4]
             {
                 new Vector4D(0, 0, 0), // 0
                 new Vector4D(1, 0, 0), // 1
@@ -101,25 +101,25 @@ namespace _3D_Graphics
 
             Spots = new Spot[4]
             {
-                new Spot(Model_Vertices[0]), // 0
-                new Spot(Model_Vertices[1]), // 1
-                new Spot(Model_Vertices[2]), // 2
-                new Spot(Model_Vertices[3]) // 3
+                new Spot(Vertices[0]), // 0
+                new Spot(Vertices[1]), // 1
+                new Spot(Vertices[2]), // 2
+                new Spot(Vertices[3]) // 3
             };
 
             Edges = new Edge[5]
             {
-                new Edge(Model_Vertices[0], Model_Vertices[1]), // 0
-                new Edge(Model_Vertices[1], Model_Vertices[2]), // 1
-                new Edge(Model_Vertices[0], Model_Vertices[2]) { Visible = false }, // 2
-                new Edge(Model_Vertices[2], Model_Vertices[3]), // 3
-                new Edge(Model_Vertices[0], Model_Vertices[3]) // 4
+                new Edge(Vertices[0], Vertices[1]), // 0
+                new Edge(Vertices[1], Vertices[2]), // 1
+                new Edge(Vertices[0], Vertices[2]) { Visible = false }, // 2
+                new Edge(Vertices[2], Vertices[3]), // 3
+                new Edge(Vertices[0], Vertices[3]) // 4
             };
 
             Faces = new Face[2]
             {
-                new Face(Model_Vertices[0], Model_Vertices[1], Model_Vertices[2], Texture_Vertices[0], Texture_Vertices[1], Texture_Vertices[2], texture), // 0
-                new Face(Model_Vertices[0], Model_Vertices[2], Model_Vertices[3], Texture_Vertices[0], Texture_Vertices[2], Texture_Vertices[3], texture) // 1
+                new Face(Vertices[0], Vertices[1], Vertices[2], Texture_Vertices[0], Texture_Vertices[1], Texture_Vertices[2], texture), // 0
+                new Face(Vertices[0], Vertices[2], Vertices[3], Texture_Vertices[0], Texture_Vertices[2], Texture_Vertices[3], texture) // 1
             };
 
             Textures = new Bitmap[1]
