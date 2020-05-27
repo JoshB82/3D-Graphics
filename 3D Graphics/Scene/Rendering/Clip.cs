@@ -6,7 +6,7 @@ namespace _3D_Graphics
     {
         private static bool Clip_Edge(Vector3D plane_point, Vector3D plane_normal, ref Edge e)
         {
-            Vector3D point_1 = new Vector3D(e.World_P1), point_2 = new Vector3D(e.World_P2);
+            Vector3D point_1 = new Vector3D(e.P1), point_2 = new Vector3D(e.P2);
             double point_1_distance = Vector3D.Point_Distance_From_Plane(point_1, plane_point, plane_normal);
             double point_2_distance = Vector3D.Point_Distance_From_Plane(point_2, plane_point, plane_normal);
 
@@ -19,16 +19,16 @@ namespace _3D_Graphics
             {
                 // One point is on the inside, the other on the outside, so clip the line
                 Vector4D intersection = new Vector4D(Vector3D.Line_Intersect_Plane(point_1, point_2, plane_point, plane_normal, out double d));
-                e.World_P1 = e.World_P1;
-                e.World_P2 = intersection;
+                e.P1 = e.P1;
+                e.P2 = intersection;
                 return true;
             }
             if (point_1_distance < 0 && point_2_distance >= 0)
             {
                 // One point is on the outside, the other on the inside, so clip the line
                 Vector4D intersection = new Vector4D(Vector3D.Line_Intersect_Plane(point_2, point_1, plane_point, plane_normal, out double d));
-                e.World_P1 = e.World_P2;
-                e.World_P2 = intersection;
+                e.P1 = e.P2;
+                e.P2 = intersection;
                 return true;
             }
             // Both points are on the outside, so discard the line
@@ -38,7 +38,7 @@ namespace _3D_Graphics
         private static int Clip_Face(Vector3D plane_point, Vector3D plane_normal, Face f, out Face f1, out Face f2)
         {
             f1 = new Face(); f2 = new Face();
-            Vector3D point_1 = new Vector3D(f.World_P1), point_2 = new Vector3D(f.World_P2), point_3 = new Vector3D(f.World_P3);
+            Vector3D point_1 = new Vector3D(f.P1), point_2 = new Vector3D(f.P2), point_3 = new Vector3D(f.P3);
             int inside_point_count = 0;
             List<Vector3D> inside_points = new List<Vector3D>(3);
             List<Vector3D> outside_points = new List<Vector3D>(3);

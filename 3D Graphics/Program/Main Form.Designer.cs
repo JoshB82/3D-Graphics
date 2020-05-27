@@ -33,8 +33,8 @@
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.switchCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Canvas_Box = new System.Windows.Forms.PictureBox();
             this.changeLightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Canvas_Box = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas_Box)).BeginInit();
             this.SuspendLayout();
@@ -81,16 +81,6 @@
             this.switchCameraToolStripMenuItem.Text = "Switch Camera";
             this.switchCameraToolStripMenuItem.Click += new System.EventHandler(this.switchCameraToolStripMenuItem_Click);
             // 
-            // Canvas_Box
-            // 
-            this.Canvas_Box.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Canvas_Box.Location = new System.Drawing.Point(0, 28);
-            this.Canvas_Box.Name = "Canvas_Box";
-            this.Canvas_Box.Size = new System.Drawing.Size(655, 463);
-            this.Canvas_Box.TabIndex = 1;
-            this.Canvas_Box.TabStop = false;
-            this.Canvas_Box.Paint += new System.Windows.Forms.PaintEventHandler(this.Canvas_Panel_Paint);
-            // 
             // changeLightToolStripMenuItem
             // 
             this.changeLightToolStripMenuItem.Name = "changeLightToolStripMenuItem";
@@ -98,14 +88,26 @@
             this.changeLightToolStripMenuItem.Text = "Change Light";
             this.changeLightToolStripMenuItem.Click += new System.EventHandler(this.changeLightToolStripMenuItem_Click);
             // 
+            // Canvas_Box
+            // 
+            this.Canvas_Box.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Canvas_Box.Location = new System.Drawing.Point(0, 28);
+            this.Canvas_Box.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Canvas_Box.Name = "Canvas_Box";
+            this.Canvas_Box.Size = new System.Drawing.Size(655, 586);
+            this.Canvas_Box.TabIndex = 1;
+            this.Canvas_Box.TabStop = false;
+            this.Canvas_Box.Paint += new System.Windows.Forms.PaintEventHandler(this.Canvas_Panel_Paint);
+            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(655, 491);
+            this.ClientSize = new System.Drawing.Size(655, 614);
             this.Controls.Add(this.Canvas_Box);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "MainForm";
             this.Text = "3D Graphics";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);

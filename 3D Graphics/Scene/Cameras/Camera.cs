@@ -79,8 +79,6 @@ namespace _3D_Graphics
 
             World_to_View = direction_rotation * direction_up_rotation * translation;
         }
-        
-        public void Apply_Model_to_World_Matrix() => World_Origin = Model_to_World * Model_Origin;
 
         #endregion
 
@@ -244,10 +242,10 @@ namespace _3D_Graphics
             View_to_Screen = Matrix4x4.Zeroed_Matrix();
             View_to_Screen.Data[3][2] = -1;
 
-            Width = width;
-            Height = height;
             Z_Near = z_near;
             Z_Far = z_far;
+            Width = width;
+            Height = height;
             Calculate_Clipping_Planes();
 
             Debug.WriteLine($"Perspective camera created at {origin}");

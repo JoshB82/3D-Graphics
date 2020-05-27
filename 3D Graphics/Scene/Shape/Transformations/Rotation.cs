@@ -97,6 +97,7 @@ namespace _3D_Graphics
         /// <returns>A rotation matrix.</returns>
         public static Matrix4x4 Rotate_Between_Vectors(Vector3D v1, Vector3D v2, Vector3D? axis = null)
         {
+            axis ??= Vector3D.Unit_Y;
             Vector3D rotation_axis = (v1 == -v2) ? (Vector3D)axis : v1.Cross_Product(v2).Normalise();
             double angle = v1.Angle(v2);
             return Rotate(rotation_axis, angle);
@@ -144,6 +145,7 @@ namespace _3D_Graphics
         /// <returns>A rotation quaternion.</returns>
         public static Quaternion Quaternion_Rotate_Between_Vectors(Vector3D v1, Vector3D v2, Vector3D? axis = null)
         {
+            axis ??= Vector3D.Unit_Y;
             Vector3D rotation_axis = (v1 == -v2) ? (Vector3D)axis : v1.Cross_Product(v2).Normalise();
             double angle = v1.Angle(v2);
             return Quaternion_Rotate(rotation_axis, angle);

@@ -9,7 +9,7 @@ namespace _3D_Graphics
         #region Fields and properties
 
         // Origins
-        public Vector4D Origin { get; set; } = Vector4D.Zero;
+        public Vector4D Origin { get; set; }
         public Vector4D World_Origin { get; set; }
 
         // Structure

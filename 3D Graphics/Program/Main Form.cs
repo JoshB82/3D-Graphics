@@ -32,22 +32,23 @@ namespace _3D_Graphics
             // Create scene
             scene = new Scene(Canvas_Box, Canvas_Box.Width, Canvas_Box.Height);
 
-            // Create origin
-            World_Point origin_mesh = new World_Point(Vector3D.Zero);
-            Shape origin = new Shape(origin_mesh);
-            scene.Add(origin);
+            scene.Create_Origin();
+            scene.Create_Axes();
 
             // Create cameras
-            Perspective_Camera default_camera = new Perspective_Camera(new Vector3D(0, 0, 100), origin_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
+            Perspective_Camera default_camera = new Perspective_Camera(new Vector3D(0, 0, 100), scene.Shape_List[0].Render_Mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 750);
             scene.Add(default_camera);
             scene.Render_Camera = default_camera;
 
-            Perspective_Camera alternate_camera = new Perspective_Camera(new Vector3D(0, 0, -10), origin_mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 20) { Draw_Entire_View = false };
+            Perspective_Camera alternate_camera = new Perspective_Camera(new Vector3D(0, 0, -10), scene.Shape_List[0].Render_Mesh, Vector3D.Unit_Y, Canvas_Box.Width / 10, Canvas_Box.Height / 10, 10, 20) { Draw_Entire_View = false };
             scene.Add(alternate_camera);
 
             // Create textures
             Bitmap brick = Properties.Resources.brick;
             Bitmap smiley = Properties.Resources.smiley;
+
+            Texture brick_texture = new Texture(brick);
+            Texture smiley_texture = new Texture(smiley);
 
             // Create default meshes
             /*
@@ -67,19 +68,6 @@ namespace _3D_Graphics
             Shape plane = new Shape(plane_mesh);
             scene.Add(plane);
             */
-
-            // Create axes
-            Line x_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(250, 0, 0)) { Edge_Colour = Color.Red };
-            Line y_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(0, 250, 0)) { Edge_Colour = Color.Green };
-            Line z_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(0, 0, 250)) { Edge_Colour = Color.Blue };
-
-            Shape x_axis = new Shape(x_axis_mesh);
-            Shape y_axis = new Shape(y_axis_mesh);
-            Shape z_axis = new Shape(z_axis_mesh);
-
-            scene.Add(x_axis);
-            scene.Add(y_axis);
-            scene.Add(z_axis);
 
             Plane test_plane = new Plane(new Vector3D(100, 0, 0), Vector3D.Unit_Y, Vector3D.Unit_Z, 50, 50, smiley);
             Shape test_plane_shape = new Shape(test_plane);

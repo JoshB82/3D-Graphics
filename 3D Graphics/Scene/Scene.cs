@@ -167,12 +167,10 @@ namespace _3D_Graphics
                 for (int i = 0; i < Width; i++) for (int j = 0; j < Height; j++) z_buffer[i][j] = 2; // 2 is always greater than anything to be rendered??///
                 for (int i = 0; i < Width; i++) for (int j = 0; j < Height; j++) colour_buffer[i][j] = Background_colour;
 
-                // Calculate and apply camera matrices
-                Render_Camera.Calculate_Model_to_World_Matrix();
-                Render_Camera.Apply_Model_to_World_Matrix();
-                Render_Camera.Calculate_World_to_View_Matrix();
-
                 // Calculate camera properties
+                Render_Camera.Calculate_Model_to_World_Matrix();
+                Render_Camera.World_Origin = Render_Camera.Model_to_World * Render_Camera.Model_Origin;
+                Render_Camera.Calculate_World_to_View_Matrix();
                 string camera_type = Render_Camera.GetType().Name;
                 Matrix4x4 world_to_view = Render_Camera.World_to_View;
                 Matrix4x4 view_to_screen = Render_Camera.View_to_Screen;

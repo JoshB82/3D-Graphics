@@ -24,13 +24,13 @@
             }
 
             // Move the edge from view space to screen space, including a correction for perspective
-            edge.World_P1 = view_to_screen * edge.World_P1;
-            edge.World_P2 = view_to_screen * edge.World_P2;
+            edge.P1 = view_to_screen * edge.P1;
+            edge.P2 = view_to_screen * edge.P2;
 
             if (camera_type == "Perspective_Camera")
             {
-                edge.World_P1 /= edge.World_P1.W;
-                edge.World_P2 /= edge.World_P2.W;
+                edge.P1 /= edge.P1.W;
+                edge.P2 /= edge.P2.W;
             }
 
             // Clip the edge in screen space
