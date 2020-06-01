@@ -102,12 +102,21 @@ namespace _3D_Graphics
             int dy_step_2 = y1 - y3;
             int dy_step_3 = y2 - y3;
 
-            double x_step_1 = (x1 - x2) / dy_step_1; // dx from point 2 to point 1
+            double x_step_1 = 0, z_step_1 = 0;
+            double x_step_3 = 0, z_step_3 = 0;
+
+            if (dy_step_1 != 0)
+            {
+                x_step_1 = (x1 - x2) / dy_step_1; // dx from point 2 to point 1
+                z_step_1 = (z1 - z2) / dy_step_1; // dz from point 2 to point 1
+            }
             double x_step_2 = (x1 - x3) / dy_step_2; // dx from point 1 to point 3
-            double x_step_3 = (x2 - x3) / dy_step_3; // dx from point 2 to point 3
-            double z_step_1 = (z1 - z2) / dy_step_1; // dz from point 2 to point 1
             double z_step_2 = (z1 - z3) / dy_step_2; // dz from point 1 to point 3
-            double z_step_3 = (z2 - z3) / dy_step_3; // dz from point 2 to point 3
+            if (dy_step_3 != 0)
+            {
+                x_step_3 = (x2 - x3) / dy_step_3; // dx from point 2 to point 3
+                z_step_3 = (z2 - z3) / dy_step_3; // dz from point 2 to point 3
+            }
 
             // Draw a flat-bottom triangle
             if (dy_step_1 != 0)
@@ -137,14 +146,11 @@ namespace _3D_Graphics
                 {
                     int sx = Round_To_Int((y - y3) * x_step_3 + x3);
                     int ex = Round_To_Int((y - y3) * x_step_2 + x3);
-                    double sz = (y - y3) * z_step_1 + z3;
+                    double sz = (y - y3) * z_step_3 + z3;
                     double ez = (y - y3) * z_step_2 + z3;
 
-                    if (sx > ex)
-                    {
-                        Swap(ref sx, ref ex);
-                        Swap(ref sz, ref ez);
-                    }
+                    if (sx > ex) Swap(ref sx, ref ex);
+                    if (sz > ez) Swap(ref sz, ref ez);
 
                     for (int x = sx; x <= ex; x++)
                     {
@@ -527,39 +533,6 @@ namespace _3D_Graphics
             }
         }
 
-        private void Flat_Top_Triangle(int x1, int y1, int x2, int y2, int x3, int y3, double z_value, double z_increase_x, double z_increase_y, Color colour)
-        {
-            // y1 must equal y2
-            int[] start_x_values, final_x_values;
-
-            if (x1 < x2)
-            {
-                start_x_values = Line_2(x3, y3, x1, y1);
-                final_x_values = Line_2(x3, y3, x2, y2);
-            }
-            else
-            {
-                start_x_values = Line_2(x3, y3, x2, y2);
-                final_x_values = Line_2(x3, y3, x1, y1);
-            }
-
-            int start_x_value, final_x_value, prev_x = 0;
-            for (int y = y3; y <= y1; y++)
-            {
-                start_x_value = start_x_values[y - y3];
-                final_x_value = final_x_values[y - y3];
-
-                if (y != y3) z_value += (start_x_value - prev_x) * z_increase_x;
-
-                for (int x = start_x_value; x <= final_x_value; x++)
-                {
-                    Check_Against_Z_Buffer(x, y, z_value, colour);
-                    z_value += z_increase_x;
-                }
-                z_value -= z_increase_x * (final_x_value - start_x_value + 1);
-                prev_x = start_x_value;
-                if (y != y1) z_value += z_increase_y;
-            }
-        }*/
+        */
     }
 }

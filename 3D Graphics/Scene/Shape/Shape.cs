@@ -2,7 +2,7 @@
 {
     public class Shape : Scene_Object
     {
-        #region Fields and properties
+        #region Fields and Properties
 
         // ID
         /// <summary>
@@ -27,6 +27,8 @@
 
         #endregion
 
+        #region Constructors
+
         /// <summary>
         /// Create a shape with a collision mesh and a render mesh.
         /// </summary>
@@ -45,5 +47,7 @@
         /// </summary>
         /// <param name="render_mesh">The mesh that will be rendered and used for determining collisions.</param>
         public Shape(Mesh render_mesh) : this(render_mesh, render_mesh) { }
+
+        #endregion
     }
 }

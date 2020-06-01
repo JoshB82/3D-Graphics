@@ -6,7 +6,7 @@ namespace _3D_Graphics
     {
         public Sphere(Vector3D origin, Vector3D direction, Vector3D direction_up, double radius, int resolution)
         {
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
 
             Debug.WriteLine($"Sphere created at {origin}");

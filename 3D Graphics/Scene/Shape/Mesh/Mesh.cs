@@ -1,32 +1,21 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using System.Drawing;
 
 namespace _3D_Graphics
 {
-    public abstract partial class Mesh
+    internal abstract partial class Mesh
     {
-        #region Fields and properties
+        #region Fields and Properties
 
         // Origins
-        public Vector4D Origin { get; set; }
-        public Vector4D World_Origin { get; set; }
+        public Vector3D Origin { get; set; }
+        public Vector3D World_Origin { get; set; }
 
         // Structure
-        private Vector4D[] vertices;
-        public Vector4D[] Vertices
-        {
-            get => vertices;
-            protected set
-            {
-                vertices = value;
-                World_Vertices = new Vector4D[value.Length];
-            }
-        }
-        public Vector4D[] World_Vertices { get; protected set; }
+        internal Vector4D[] Vertices { get; set; }
+        public Vector3D[] World_Vertices { get; protected set; }
 
         public Vector3D[] Texture_Vertices { get; protected set; }
-        public Bitmap[] Textures { get; protected set; }
+        public Texture[] Textures { get; protected set; }
 
         public Spot[] Spots { get; protected set; }
         public Edge[] Edges { get; protected set; }
@@ -43,7 +32,7 @@ namespace _3D_Graphics
 
         // Appearance
         /// <summary>
-        /// Determines if the mesh's spots are to be drawn.
+        /// Determines if the mesh's spots are drawn.
         /// </summary>
         public bool Draw_Spots { get; set; } = true;
         /// <summary>
@@ -51,7 +40,7 @@ namespace _3D_Graphics
         /// </summary>
         public bool Draw_Edges { get; set; } = true;
         /// <summary>
-        /// Determines if the mesh's faces are to be drawn.
+        /// Determines if the mesh's faces are drawn.
         /// </summary>
         public bool Draw_Faces { get; set; } = true;
 
@@ -119,7 +108,7 @@ namespace _3D_Graphics
             Matrix4x4 direction_rotation = Transform.Rotate_Between_Vectors(Model_Direction, World_Direction);
             Matrix4x4 direction_up_rotation = Transform.Rotate_Between_Vectors(new Vector3D(direction_rotation * new Vector4D(Model_Direction_Up)), World_Direction_Up);
             Matrix4x4 scale = Transform.Scale(Scaling.X, Scaling.Y, Scaling.Z);
-            Matrix4x4 translation = Transform.Translate(new Vector3D(World_Origin));
+            Matrix4x4 translation = Transform.Translate(World_Origin);
 
             Model_to_World = translation * direction_up_rotation * direction_rotation * scale;
         }

@@ -4,6 +4,9 @@ namespace _3D_Graphics
 {
     public sealed partial class Scene
     {
+        /// <summary>
+        /// Creates an origin point at (0, 0, 0) and adds it to the scene.
+        /// </summary>
         public void Create_Origin()
         {
             World_Point origin_mesh = new World_Point(Vector3D.Zero);
@@ -11,6 +14,9 @@ namespace _3D_Graphics
             Add(origin);
         }
 
+        /// <summary>
+        /// Creates axes starting from (0, 0, 0) and adds them to the scene.
+        /// </summary>
         public void Create_Axes()
         {
             Line x_axis_mesh = new Line(new Vector3D(0, 0, 0), new Vector3D(250, 0, 0)) { Edge_Colour = Color.Red };

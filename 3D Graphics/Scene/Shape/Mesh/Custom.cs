@@ -18,7 +18,7 @@ namespace _3D_Graphics
             Edge[] edges,
             Face[] faces)
         {
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
 
             Vertices = vertices;
@@ -35,9 +35,9 @@ namespace _3D_Graphics
             Spot[] spots,
             Edge[] edges,
             Face[] faces,
-            Bitmap[] textures)
+            Texture[] textures)
         {
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
 
             Vertices = vertices;
@@ -59,7 +59,7 @@ namespace _3D_Graphics
                 return;
             }
 
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
             
             List<Vector4D> vertices = new List<Vector4D>();
@@ -103,7 +103,7 @@ namespace _3D_Graphics
                             {
                                 p1 = Int32.Parse(data[no_end_points]) - 1;
                                 p2 = Int32.Parse(data[no_end_points - 1]) - 1;
-                                edges.Add(new Edge(vertices[p1 - 1], vertices[p2 - 1], Color.Black));
+                                edges.Add(new Edge(new Vector3D(vertices[p1 - 1]), new Vector3D(vertices[p2 - 1]), Color.Black));
                                 no_end_points--;
                             }
                             while (no_end_points > 1);
@@ -113,7 +113,7 @@ namespace _3D_Graphics
                             p1 = Int32.Parse(data[1]) - 1;
                             p2 = Int32.Parse(data[2]) - 1;
                             p3 = Int32.Parse(data[3]) - 1;
-                            faces.Add(new Face(vertices[p1 - 1], vertices[p2 - 1], vertices[p3 - 1], Color.BlueViolet));
+                            faces.Add(new Face(new Vector3D(vertices[p1 - 1]), new Vector3D(vertices[p2 - 1]), new Vector3D(vertices[p3 - 1]), Color.BlueViolet));
                             break;
                     }
                 }
@@ -134,7 +134,7 @@ namespace _3D_Graphics
 
         public Custom(Vector3D origin, Vector3D direction, Vector3D direction_up, Mesh m1, Mesh m2)
         {
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
 
             Vertices = m1.Vertices.Concat(m2.Vertices).ToArray(); // Not entirely sure how this works?

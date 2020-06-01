@@ -18,11 +18,11 @@ namespace _3D_Graphics
         /// <summary>
         /// The position of the camera in model space.
         /// </summary>
-        public Vector4D Model_Origin { get; } = Vector4D.Zero;
+        public Vector4D Origin { get; }
         /// <summary>
         /// The position of the camera in world space.
         /// </summary>
-        public Vector4D World_Origin { get; set; }
+        public Vector3D World_Origin { get; set; }
 
         // Directions
         /// <summary>
@@ -67,13 +67,13 @@ namespace _3D_Graphics
         {
             Matrix4x4 direction_rotation = Transform.Rotate_Between_Vectors(Model_Direction, World_Direction);
             Matrix4x4 direction_up_rotation = Transform.Rotate_Between_Vectors(new Vector3D(direction_rotation * new Vector4D(Model_Direction_Up)), World_Direction_Up);
-            Matrix4x4 translation = Transform.Translate(new Vector3D(World_Origin));
+            Matrix4x4 translation = Transform.Translate(World_Origin);
 
             Model_to_World = translation * direction_up_rotation * direction_rotation;
         }
         public void Calculate_World_to_View_Matrix()
         {
-            Matrix4x4 translation = Transform.Translate(-new Vector3D(World_Origin));
+            Matrix4x4 translation = Transform.Translate(-World_Origin);
             Matrix4x4 direction_up_rotation = Transform.Rotate_Between_Vectors(World_Direction_Up, Model_Direction_Up);
             Matrix4x4 direction_rotation = Transform.Rotate_Between_Vectors(new Vector3D(direction_up_rotation * new Vector4D(World_Direction)), Model_Direction);
 
@@ -82,13 +82,17 @@ namespace _3D_Graphics
 
         #endregion
 
+        #region Constructors
+
         public Camera(Vector3D origin, Vector3D direction, Vector3D direction_up)
         {
             ID = ++next_id;
 
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Camera_Direction_1(direction, direction_up);
         }
+
+        #endregion
     }
 
     public class Orthogonal_Camera : Camera
@@ -152,11 +156,11 @@ namespace _3D_Graphics
             Debug.WriteLine($"Orthogonal camera created at {origin}");
         }
 
-        public Orthogonal_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, double width, double height, double z_near, double z_far) : this(origin, new Vector3D(pointed_at.World_Origin) - origin, direction_up, width, height, z_near, z_far) { }
+        public Orthogonal_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, double width, double height, double z_near, double z_far) : this(origin, pointed_at.World_Origin - origin, direction_up, width, height, z_near, z_far) { }
 
         public Orthogonal_Camera(Vector3D origin, Vector3D direction, Vector3D direction_up, string ignore, double fov_x, double fov_y, double z_near, double z_far) : this(origin, direction, direction_up, Math.Tan(fov_x / 2) * z_near * 2, Math.Tan(fov_y / 2) * z_near * 2, z_near, z_far) { }
 
-        public Orthogonal_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, string ignore, double fov_x, double fov_y, double z_near, double z_far) : this(origin, new Vector3D(pointed_at.World_Origin), direction_up, Math.Tan(fov_x / 2) * z_near * 2, Math.Tan(fov_y / 2) * z_near * 2, z_near, z_far) { }
+        public Orthogonal_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, string ignore, double fov_x, double fov_y, double z_near, double z_far) : this(origin, pointed_at.World_Origin, direction_up, Math.Tan(fov_x / 2) * z_near * 2, Math.Tan(fov_y / 2) * z_near * 2, z_near, z_far) { }
 
         #endregion
 
@@ -251,11 +255,11 @@ namespace _3D_Graphics
             Debug.WriteLine($"Perspective camera created at {origin}");
         }
 
-        public Perspective_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, double width, double height, double z_near, double z_far) : this(origin, new Vector3D(pointed_at.World_Origin) - origin, direction_up, width, height, z_near, z_far) { }
+        public Perspective_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, double width, double height, double z_near, double z_far) : this(origin, pointed_at.World_Origin - origin, direction_up, width, height, z_near, z_far) { }
 
         public Perspective_Camera(Vector3D origin, Vector3D direction, Vector3D direction_up, string ignore, double fov_x, double fov_y, double z_near, double z_far) : this(origin, direction, direction_up, Math.Tan(fov_x / 2) * z_near * 2, Math.Tan(fov_y / 2) * z_near * 2, z_near, z_far) { }
 
-        public Perspective_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, string ignore, double fov_x, double fov_y, double z_near, double z_far) : this(origin, new Vector3D(pointed_at.World_Origin), direction_up, Math.Tan(fov_x / 2) * z_near * 2, Math.Tan(fov_y / 2) * z_near * 2, z_near, z_far) { }
+        public Perspective_Camera(Vector3D origin, Mesh pointed_at, Vector3D direction_up, string ignore, double fov_x, double fov_y, double z_near, double z_far) : this(origin, pointed_at.World_Origin, direction_up, Math.Tan(fov_x / 2) * z_near * 2, Math.Tan(fov_y / 2) * z_near * 2, z_near, z_far) { }
 
         #endregion
 

@@ -16,6 +16,6 @@ namespace _3D_Graphics
             Debug.WriteLine($"Point light created at {origin}");
         }
 
-        public Point_Light(Vector3D origin, Mesh pointed_at, Color? colour, double intensity) : this(origin, new Vector3D(pointed_at.World_Origin) - origin, colour, intensity) { }
+        public Point_Light(Vector3D origin, Mesh pointed_at, Color? colour, double intensity) : this(origin, pointed_at.World_Origin - origin, colour, intensity) { }
     }
 }

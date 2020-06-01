@@ -4,23 +4,20 @@ namespace _3D_Graphics
 {
     public abstract class Light : Scene_Object
     {
-        #region ID
+        #region Fields and Properties
+
+        // ID
         /// <summary>
         /// Unique identification number for this light.
         /// </summary>
         public int ID { get; private set; }
         private static int next_id = -1;
-        protected static int Get_Next_ID()
-        {
-            next_id++;
-            return next_id;
-        }
-        #endregion
 
-        public Vector3D Model_Origin { get; } = Vector3D.Zero;
+        // Origins
+        public Vector3D Origin { get; }
         public Vector4D World_Origin { get; set; }
-        public Vector4D Camera_Origin { get; protected set; } //?
 
+        // Directions
         public Vector3D Model_Direction { get; } = Vector3D.Unit_X;
         public Vector3D Model_Direction_Up { get; } = Vector3D.Unit_Y;
         public Vector3D Model_Direction_Right { get; } = Vector3D.Unit_Z;
@@ -38,8 +35,20 @@ namespace _3D_Graphics
         // Transformations
         public Vector3D Translation { get; protected set; }
 
+        // Appearance
         public Color Colour { get; set; }
         public double Intensity { get; set; }
         public string Icon { get; } = "";
+
+        #endregion
+
+        #region Constructors
+
+        public Light()
+        {
+            ID = ++next_id;
+        }
+
+        #endregion
     }
 }

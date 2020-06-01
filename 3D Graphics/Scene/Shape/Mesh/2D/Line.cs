@@ -7,7 +7,7 @@ namespace _3D_Graphics
     {
         public Line(Vector3D start_position, Vector3D end_position)
         {
-            World_Origin = new Vector4D(start_position);
+            World_Origin = start_position;
             Set_Shape_Direction_1(Vector3D.Unit_X, Vector3D.Unit_Y);
 
             Vertices = new Vector4D[2]

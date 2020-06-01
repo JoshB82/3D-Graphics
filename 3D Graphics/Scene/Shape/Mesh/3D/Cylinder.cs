@@ -5,5 +5,13 @@ namespace _3D_Graphics
 {
     public sealed class Cylinder
     {
+        #region Constructors
+
+        public Cylinder(Vector3D origin, Vector3D direction, Vector3D direction_up)
+        {
+
+        }
+
+        #endregion
     }
 }

@@ -8,6 +8,8 @@ namespace _3D_Graphics
     /// </summary>
     public sealed class Cuboid : Mesh
     {
+        #region Fields and Properties
+
         private double length, width, height;
         public double Length
         {
@@ -37,13 +39,17 @@ namespace _3D_Graphics
             }
         }
 
+        #endregion
+
+        #region Constructors
+
         public Cuboid(Vector3D origin, Vector3D direction, Vector3D direction_up, double length, double width, double height)
         {
             Length = length;
             Width = width;
             Height = height;
 
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
 
             Vertices = new Vector4D[8]
@@ -115,13 +121,13 @@ namespace _3D_Graphics
             Debug.WriteLine($"Cuboid created at {origin}");
         }
 
-        public Cuboid(Vector3D origin, Vector3D direction, Vector3D direction_up, double length, double width, double height, Bitmap texture)
+        public Cuboid(Vector3D origin, Vector3D direction, Vector3D direction_up, double length, double width, double height, Texture texture)
         {
             Length = length;
             Width = width;
             Height = height;
 
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
 
             Vertices = new Vector4D[8]
@@ -194,7 +200,7 @@ namespace _3D_Graphics
                 new Face(Vertices[4], Vertices[1], Vertices[0], Texture_Vertices[3], Texture_Vertices[1], Texture_Vertices[0], texture) // 11
             };
 
-            Textures = new Bitmap[1]
+            Textures = new Texture[1]
             {
                 texture // 0
             };
@@ -204,5 +210,7 @@ namespace _3D_Graphics
 
             Debug.WriteLine($"Cuboid created at {origin}");
         }
+
+        #endregion
     }
 }

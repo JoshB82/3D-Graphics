@@ -8,6 +8,8 @@ namespace _3D_Graphics
     /// </summary>
     public sealed class Cube : Mesh
     {
+        #region Fields and Properties
+
         private double side_length;
         public double Side_Length
         {
@@ -19,11 +21,15 @@ namespace _3D_Graphics
             }
         }
 
+        #endregion
+
+        #region Constructors
+
         public Cube(Vector3D origin, Vector3D direction, Vector3D direction_up, double side_length)
         {
             Side_Length = side_length;
 
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
 
             Vertices = new Vector4D[8]
@@ -95,11 +101,11 @@ namespace _3D_Graphics
             Debug.WriteLine($"Cube created at {origin}");
         }
 
-        public Cube(Vector3D origin, Vector3D direction, Vector3D direction_up, double side_length, Bitmap texture)
+        public Cube(Vector3D origin, Vector3D direction, Vector3D direction_up, double side_length, Texture texture)
         {
             Side_Length = side_length;
 
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, direction_up);
 
             Vertices = new Vector4D[8]
@@ -172,7 +178,7 @@ namespace _3D_Graphics
                 new Face(Vertices[4], Vertices[1], Vertices[0], Texture_Vertices[3], Texture_Vertices[1], Texture_Vertices[0], texture) // 11
             };
 
-            Textures = new Bitmap[1]
+            Textures = new Texture[1]
             {
                 texture // 0
             };
@@ -182,5 +188,7 @@ namespace _3D_Graphics
 
             Debug.WriteLine($"Cube created at {origin}");
         }
+
+        #endregion
     }
 }

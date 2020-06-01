@@ -12,11 +12,9 @@ namespace _3D_Graphics
             // Move the face from model space to world space
             face.P1 = model_to_world * face.P1;
             face.P2 = model_to_world * face.P2;
-            face.World_P1 = model_to_world * face.World_P1;
-            face.World_P2 = model_to_world * face.World_P2;
 
-            Vector3D camera_to_face = new Vector3D(face.World_P1 - Render_Camera.World_Origin);
-            Vector3D normal = Vector3D.Normal_From_Plane(new Vector3D(face.World_P1), new Vector3D(face.World_P2), new Vector3D(face.World_P3));
+            Vector3D camera_to_face = new Vector3D(face.P1 - Render_Camera.World_Origin);
+            Vector3D normal = Vector3D.Normal_From_Plane(face.World_P1, face.World_P2, face.World_P3);
 
             // Discard face if its not visible
             if (camera_to_face * normal >= 0 && shape_type != "Plane") return;
@@ -50,15 +48,14 @@ namespace _3D_Graphics
                     new_view_triangles[i].P1 /= new_view_triangles[i].P1.W;
                     new_view_triangles[i].P2 /= new_view_triangles[i].P2.W;
                     new_view_triangles[i].P3 /= new_view_triangles[i].P3.W;
+                    
+                    if (face.Texture_Object.File != null)
+                    {
+                        new_view_triangles[i].T1 /= new_view_triangles[i].P1.W;
+                        new_view_triangles[i].T2 /= new_view_triangles[i].P1.W;
+                        new_view_triangles[i].T3 /= new_view_triangles[i].P1.W;
+                    }
                 }
-
-                /*
-                if (face.Texture != null)^^
-                {
-                    projection_clipped_face.T1 /= projection_clipped_face.World_P1.W;
-                    projection_clipped_face.T2 /= projection_clipped_face.World_P1.W;
-                    projection_clipped_face.T3 /= projection_clipped_face.World_P1.W;
-                }*/
             }
 
             // Clip the face in screen space
@@ -76,15 +73,15 @@ namespace _3D_Graphics
                 int result_point_1_x = Round_To_Int(new_screen_triangles[i].P1.X);
                 int result_point_1_y = Round_To_Int(new_screen_triangles[i].P1.Y);
                 double result_point_1_z = new_screen_triangles[i].P1.Z;
-                int result_point_2_x = Round_To_Int(new_screen_triangles[i].P1.X);
-                int result_point_2_y = Round_To_Int(new_screen_triangles[i].P1.Y);
-                double result_point_2_z = new_screen_triangles[i].P1.Z;
-                int result_point_3_x = Round_To_Int(new_screen_triangles[i].P1.X);
-                int result_point_3_y = Round_To_Int(new_screen_triangles[i].P1.Y);
-                double result_point_3_z = new_screen_triangles[i].P1.Z;
+                int result_point_2_x = Round_To_Int(new_screen_triangles[i].P2.X);
+                int result_point_2_y = Round_To_Int(new_screen_triangles[i].P2.Y);
+                double result_point_2_z = new_screen_triangles[i].P2.Z;
+                int result_point_3_x = Round_To_Int(new_screen_triangles[i].P3.X);
+                int result_point_3_y = Round_To_Int(new_screen_triangles[i].P3.Y);
+                double result_point_3_z = new_screen_triangles[i].P3.Z;
 
                 // Finally draw the triangle
-                if (face.Texture == null)
+                if (face.Texture_Object.File == null)
                 {
                     Solid_Triangle(new_screen_triangles[i].Colour,
                         result_point_1_x, result_point_1_y, result_point_1_z,
@@ -94,8 +91,8 @@ namespace _3D_Graphics
                 else
                 {
                     // Scale the texture co-ordinates
-                    int width = face.Texture.Width - 1;
-                    int height = face.Texture.Height - 1;
+                    int width = face.Texture_Object.File.Width - 1;
+                    int height = face.Texture_Object.File.Height - 1;
 
                     // AFTERWARDS?
                     int result_texture_point_1_x = Round_To_Int(face.T1.X * width);
@@ -105,7 +102,7 @@ namespace _3D_Graphics
                     int result_texture_point_3_x = Round_To_Int(face.T3.X * width);
                     int result_texture_point_3_y = Round_To_Int(face.T3.Y * height);
 
-                    Textured_Triangle(face.Texture,
+                    Textured_Triangle(face.Texture_Object.File,
                         result_point_1_x, result_point_1_y, result_point_1_z, result_texture_point_1_x, result_texture_point_1_y,
                         result_point_2_x, result_point_2_y, result_point_2_z, result_texture_point_2_x, result_texture_point_2_y,
                         result_point_3_x, result_point_3_y, result_point_3_z, result_texture_point_3_x, result_texture_point_3_y);

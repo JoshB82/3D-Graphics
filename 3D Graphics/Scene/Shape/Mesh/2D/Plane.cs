@@ -8,6 +8,8 @@ namespace _3D_Graphics
     /// </summary>
     public sealed class Plane : Mesh
     {
+        #region Fields and Properties
+
         private double length, width;
         public double Length
         {
@@ -28,12 +30,16 @@ namespace _3D_Graphics
             }
         }
 
+        #endregion
+
+        #region Constructors
+
         public Plane(Vector3D origin, Vector3D direction, Vector3D normal, double length, double width)
         {
             Length = length;
             Width = width;
 
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, normal);
 
             Vertices = new Vector4D[4]
@@ -74,12 +80,12 @@ namespace _3D_Graphics
             Debug.WriteLine($"Plane created at {origin}");
         }
 
-        public Plane(Vector3D origin, Vector3D direction, Vector3D normal, double length, double width, Bitmap texture)
+        public Plane(Vector3D origin, Vector3D direction, Vector3D normal, double length, double width, Texture texture)
         {
             Length = length;
             Width = width;
 
-            World_Origin = new Vector4D(origin);
+            World_Origin = origin;
             Set_Shape_Direction_1(direction, normal);
 
             Vertices = new Vector4D[4]
@@ -122,7 +128,7 @@ namespace _3D_Graphics
                 new Face(Vertices[0], Vertices[2], Vertices[3], Texture_Vertices[0], Texture_Vertices[2], Texture_Vertices[3], texture) // 1
             };
 
-            Textures = new Bitmap[1]
+            Textures = new Texture[1]
             {
                 texture // 0
             };
@@ -132,5 +138,7 @@ namespace _3D_Graphics
 
             Debug.WriteLine($"Plane created at {origin}");
         }
+
+        #endregion
     }
 }

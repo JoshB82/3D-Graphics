@@ -5,23 +5,20 @@ using System.Windows.Forms;
 
 namespace _3D_Graphics
 {
-    public abstract class Scene_Object { } // Used to group scene objects together.
+    internal abstract class Scene_Object { } // Used to group scene objects together.
 
     public sealed partial class Scene
     {
         private static readonly object locker = new object();
+        private Clipping_Plane[] screen_clipping_planes;
 
         public readonly List<Camera> Camera_List = new List<Camera>();
         public readonly List<Light> Light_List = new List<Light>();
         public readonly List<Shape> Shape_List = new List<Shape>();
 
-        private Clipping_Plane[] screen_clipping_planes;
-
         public Camera Render_Camera { get; set; }
-
-        public PictureBox Canvas_box { get; set; }
+        public PictureBox Canvas_Box { get; set; }
         public Bitmap Canvas { get; private set; }
-        
         public Color Background_colour { get; set; }
 
         // Buffers
@@ -79,7 +76,7 @@ namespace _3D_Graphics
         /// <param name="height">Height of scene.</param>
         public Scene(PictureBox canvas_box, int width, int height)
         {
-            Canvas_box = canvas_box;
+            Canvas_Box = canvas_box;
             Width = width;
             Height = height;
 
@@ -152,7 +149,7 @@ namespace _3D_Graphics
 
         public void Render()
         {
-            if (Canvas_box == null) throw new Exception("No picture box has been set yet!");
+            if (Canvas_Box == null) throw new Exception("No picture box has been set yet!");
             if (Render_Camera == null) throw new Exception("No camera has been set yet!");
 
             // Only render if a change in scene has taken place
@@ -188,7 +185,6 @@ namespace _3D_Graphics
                         Matrix4x4 model_to_world = shape_mesh.Model_to_World;
 
                         shape_mesh.Origin = screen_to_window * view_to_screen * world_to_view * model_to_world * shape_mesh.Origin;
-                        shape_mesh.World_Origin = model_to_world * shape_mesh.Origin;
                         
                         string shape_type = shape_mesh.GetType().Name;
 
@@ -238,7 +234,7 @@ namespace _3D_Graphics
                 }
 
                 Canvas = temp_canvas;
-                Canvas_box.Invalidate();
+                Canvas_Box.Invalidate();
                 Change_scene = false;
             }
         }
